@@ -3,8 +3,8 @@
 /pkg/
 
 # Módulos do Go
-/go.sum
-/go.mod
+# /go.sum
+# /go.mod
 
 # Arquivos temporários de IDEs
 .idea/
