@@ -53,29 +53,3 @@ func CreateDatabaseConnection() (*sql.DB, error) {
 	fmt.Println("Conexão bem-sucedida ao banco de dados MySQL!")
 	return db, nil
 }
-
-func GetPosts(db *sql.DB) ([]Post, error) {
-	// Consulta SQL para buscar todos os posts
-	rows, err := db.Query("SELECT * FROM posts")
-	if err != nil {
-		return nil, fmt.Errorf("Erro ao executar a consulta: %v", err)
-	}
-	defer rows.Close()
-
-	var posts []Post
-
-	// Processa os resultados da consulta
-	for rows.Next() {
-		var post Post
-		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.Date, &post.Category, &post.MetaTagTitle, &post.MetaTagDescription, &post.PostImage, &post.PostBackground, &post.Author, &post.Keywords); err != nil {
-			return nil, fmt.Errorf("Erro ao ler os dados da linha: %v", err)
-		}
-		posts = append(posts, post)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("Erro ao iterar sobre as linhas: %v", err)
-	}
-
-	return posts, nil
-}
