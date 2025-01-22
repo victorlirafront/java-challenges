@@ -5,6 +5,8 @@ import (
 	"blog-api/routes"
 	"fmt"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -14,21 +16,23 @@ func main() {
 	}
 	defer db.Close()
 
-	// Busca os posts no banco de dados
-	posts, err := routes.GetPosts(db)
+	router := gin.Default()
+
+	router.GET("/posts", func(c *gin.Context) {
+		posts, err := routes.GetPosts(db)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
+			})
+			return
+		}
+
+		c.JSON(200, posts)
+	})
+
+	fmt.Println("Servidor rodando em http://localhost:8080")
+	err = router.Run(":8080")
 	if err != nil {
-		log.Fatalf("Erro ao buscar os posts: %v", err)
+		log.Fatalf("Erro ao iniciar o servidor: %v", err)
 	}
-
-	// Exibe os posts na tela
-	for _, post := range posts {
-		fmt.Printf("ID: %s\n", post.ID)
-		fmt.Printf("Title: %s\n", post.Title)
-		fmt.Printf("Content: %s\n", post.Content)
-		fmt.Printf("Date: %s\n", post.Date)
-		fmt.Printf("Category: %s\n", post.Category)
-		fmt.Println("--------")
-	}
-
-	fmt.Println("Conexão estabelecida com sucesso!")
 }
