@@ -33,6 +33,8 @@ func main() {
 		c.JSON(200, posts)
 	})
 
+	router.GET("/search", routes.SearchPostsHandler(db))
+
 	fmt.Println("Servidor rodando em http://localhost:8080")
 	err = router.Run(":8080")
 	if err != nil {

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"blog-api/models" // Importa o pacote models
+	"blog-api/models"
 	"database/sql"
 	"fmt"
 )
