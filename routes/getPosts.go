@@ -6,9 +6,7 @@ import (
 	"fmt"
 )
 
-// Função para buscar os posts do banco de dados e retornar para o cliente
 func GetPosts(db *sql.DB) ([]models.Post, error) {
-	// Consultar todos os posts
 	rows, err := db.Query("SELECT id, title, content, date, category FROM posts")
 	if err != nil {
 		return nil, fmt.Errorf("erro ao buscar posts: %v", err)
