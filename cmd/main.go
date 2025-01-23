@@ -2,6 +2,7 @@ package main
 
 import (
 	"blog-api/database"
+	"blog-api/middleware"
 	"blog-api/routes"
 	"fmt"
 	"log"
@@ -17,6 +18,8 @@ func main() {
 	defer db.Close()
 
 	router := gin.Default()
+
+	router.Use(middleware.CORSMiddleware())
 
 	router.GET("/posts", func(c *gin.Context) {
 		posts, err := routes.GetPosts(db)
