@@ -4,6 +4,7 @@ import (
 	"blog-api/database"
 	"blog-api/middleware"
 	"blog-api/routes"
+	"blog-api/utils"
 	"fmt"
 	"log"
 
@@ -22,7 +23,11 @@ func main() {
 	router.Use(middleware.CORSMiddleware())
 
 	router.GET("/posts", func(c *gin.Context) {
-		posts, err := routes.GetPosts(db)
+		// Captura os parâmetros de página e limite da query string
+		page, perPage := utils.GetPaginationParams(c.Request)
+
+		// Chama a função GetPaginatedPosts passando a página e o limite
+		posts, err := routes.GetPaginatedPosts(db, page, perPage)
 		if err != nil {
 			c.JSON(500, gin.H{
 				"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
@@ -30,6 +35,7 @@ func main() {
 			return
 		}
 
+		// Retorna os posts paginados
 		c.JSON(200, posts)
 	})
 

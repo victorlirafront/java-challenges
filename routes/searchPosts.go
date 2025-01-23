@@ -2,33 +2,24 @@ package routes
 
 import (
 	"blog-api/models"
+	"blog-api/utils"
 	"database/sql"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
+// Função que retorna os parâmetros de paginação
 func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Obtendo os parâmetros de página e limite da URL
+		page, perPage := utils.GetPaginationParams(c.Request)
 		query := c.DefaultQuery("query", "")
 		category := c.DefaultQuery("category", "all")
-		pageStr := c.DefaultQuery("page", "1")
-		limitStr := c.DefaultQuery("limit", "10")
 
-		// Convertendo `page` e `limit` para inteiros
-		page, err := strconv.Atoi(pageStr)
-		if err != nil || page < 1 {
-			page = 1
-		}
-
-		limit, err := strconv.Atoi(limitStr)
-		if err != nil || limit < 1 {
-			limit = 10
-		}
-
-		offset := (page - 1) * limit
+		// Calculando o offset com base na página e no número de itens por página
+		offset := (page - 1) * perPage
 
 		// Construindo a consulta SQL (aplicando filtro apenas no title)
 		sqlQuery := `
@@ -55,13 +46,9 @@ func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 		}
 
 		sqlQuery += " LIMIT ? OFFSET ?"
-		params = append(params, limit, offset)
+		params = append(params, perPage, offset)
 
-		// Exibindo a consulta para depuração
-		fmt.Printf("Query executada: %s\n", sqlQuery)
-		fmt.Printf("Parâmetros: %v\n", params)
-
-		// Executando a consulta
+		// Executando a consulta para os posts
 		rows, err := db.Query(sqlQuery, params...)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao executar a query: %v", err)})
@@ -92,17 +79,42 @@ func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 			posts = append(posts, post)
 		}
 
+		// Verificando erros ao iterar os resultados
 		if err := rows.Err(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao iterar os resultados: %v", err)})
 			return
 		}
 
-		// Retornando os resultados
+		// Contando o total de posts para a mesma consulta (sem LIMIT)
+		countQuery := `
+			SELECT COUNT(*) 
+			FROM posts 
+			WHERE title LIKE ?`
+		var paramsCount []interface{}
+		paramsCount = append(paramsCount, fmt.Sprintf("%%%s%%", query))
+
+		if category != "all" && category != "" {
+			countQuery += " AND category = ?"
+			paramsCount = append(paramsCount, category)
+		}
+
+		var totalCount int
+		err = db.QueryRow(countQuery, paramsCount...).Scan(&totalCount)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao contar os posts: %v", err)})
+			return
+		}
+
+		// Calculando o total de páginas
+		totalPages := (totalCount + perPage - 1) / perPage // Total de páginas com base no número total de posts e no limite
+
+		// Retornando os resultados com a contagem de total de páginas
 		c.JSON(http.StatusOK, gin.H{
-			"data":  posts,
-			"page":  page,
-			"limit": limit,
-			"total": len(posts),
+			"data":       posts,
+			"page":       page,
+			"perPage":    perPage,
+			"total":      totalCount,
+			"totalPages": totalPages,
 		})
 	}
 }

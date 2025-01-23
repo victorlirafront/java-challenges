@@ -6,8 +6,13 @@ import (
 	"fmt"
 )
 
-func GetPosts(db *sql.DB) ([]models.Post, error) {
-	rows, err := db.Query("SELECT id, title, content, date, category FROM posts")
+func GetPaginatedPosts(db *sql.DB, page, perPage int) ([]models.Post, error) {
+	offset := (page - 1) * perPage
+
+	// Consulta SQL com paginação
+	query := fmt.Sprintf("SELECT id, title, content, date, category FROM posts LIMIT %d OFFSET %d", perPage, offset)
+
+	rows, err := db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao buscar posts: %v", err)
 	}
