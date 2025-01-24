@@ -15,10 +15,14 @@ export const StyledHeader = styled.header`
     justify-content: space-between;
     align-items: flex-end;
 
+    .title {
+      margin-bottom: 20px;
+    }
+
     .golang {
       min-height: 100%;
       background-image: url(https://go.dev/images/gophers/ladder.svg);
-      width: 300px;
+      width: 156px;
       background-repeat: no-repeat;
       background-position: top center;
       background-size: 150px;
