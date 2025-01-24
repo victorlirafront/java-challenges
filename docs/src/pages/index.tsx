@@ -1,3 +1,4 @@
+import BlocksWrapper from "@/components/BlocksWrapper/BlocksWrapper";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import Head from "next/head";
@@ -13,6 +14,11 @@ export default function Home() {
       </Head>
       <div>
         <Header/>
+        <div>
+          <BlocksWrapper />
+          <BlocksWrapper />
+          <BlocksWrapper />
+        </div>
         <Footer />
       </div>
     </>
