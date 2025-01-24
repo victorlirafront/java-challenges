@@ -17,6 +17,10 @@ export const StyledHeader = styled.header`
 
     .title {
       margin-bottom: 20px;
+
+      span {
+        font-size: 40px;
+      }
     }
 
     .golang {

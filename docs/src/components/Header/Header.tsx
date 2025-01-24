@@ -4,7 +4,7 @@ function Header(){
   return (
     <StyledHeader>
       <div className="container">
-        <h1 className="title">API: Documentacão</h1>
+        <h1 className="title">Blog API: <span>Documentation</span></h1>
         <div  className="golang">
         </div>
       </div>
