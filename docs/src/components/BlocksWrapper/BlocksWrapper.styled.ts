@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const StyledBlocksWrapper = styled.div`
   border: 15px solid #e5e9f0;
-  width: 900px;
+  max-width: 900px;
   margin: 0 auto;
   margin-bottom: 3rem;
   border-radius: 6px;
@@ -104,6 +104,7 @@ export const StyledBlocksWrapper = styled.div`
             text-transform: uppercase;
             color: #333;
             margin-right: 0.5rem;
+            display: none;
           }
 
           &.method {
