@@ -15,9 +15,10 @@ export default function Home() {
       <div>
         <Header/>
         <div>
-          <BlocksWrapper />
-          <BlocksWrapper />
-          <BlocksWrapper />
+          <BlocksWrapper>
+            <h1 className="title">What is an API?</h1>
+            <p className="paragraph">An API is — in short — a set of dedicated URLs that return pure data responses, in most cases in JSON format — meaning the responses won’t contain the kind of presentational overhead that you would expect in a graphical user interface like a website. I took that great definition from this very understandable article. Please refer to it for more information!</p>
+          </BlocksWrapper>
         </div>
         <Footer />
       </div>
