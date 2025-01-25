@@ -13,11 +13,51 @@ export default function Home() {
         <link rel="icon" href="https://go.dev/images/favicon-gopher.svg" />
       </Head>
       <div>
-        <Header/>
+        <Header />
         <div>
           <BlocksWrapper>
             <h1 className="title">What is an API?</h1>
-            <p className="paragraph">An API is — in short — a set of dedicated URLs that return pure data responses, in most cases in JSON format — meaning the responses won’t contain the kind of presentational overhead that you would expect in a graphical user interface like a website. I took that great definition from this very understandable article. Please refer to it for more information!</p>
+            <p className="paragraph">
+              An API is — in short — a set of dedicated URLs that return pure
+              data responses, in most cases in JSON format — meaning the
+              responses won’t contain the kind of presentational overhead that
+              you would expect in a graphical user interface like a website. I
+              took that great definition from this very understandable article.
+              Please refer to it for more information!
+            </p>
+          </BlocksWrapper>
+          <BlocksWrapper>
+            <h1 className="title">Which routes are available?</h1>
+            <table className="api-table">
+              <thead className="table-header">
+                <tr>
+                  <th scope="col">Method</th>
+                  <th scope="col">Endpoint</th>
+                  <th scope="col">Response</th>
+                  <th scope="col">Token Required</th>
+                </tr>
+              </thead>
+              <tbody className="table-body">
+                <tr>
+                  <td className="method">GET</td>
+                  <td className="route">/posts</td>
+                  <td>Get all blog posts</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="method">GET</td>
+                  <td className="route">/posts</td>
+                  <td>Get all blog posts</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="method">GET</td>
+                  <td className="route">/posts</td>
+                  <td>Get all blog posts</td>
+                  <td>No</td>
+                </tr>
+              </tbody>
+            </table>
           </BlocksWrapper>
         </div>
         <Footer />
