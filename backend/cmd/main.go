@@ -19,14 +19,10 @@ func main() {
 	defer db.Close()
 
 	router := gin.Default()
-
+	router.Use(middleware.DatabaseMiddleware(db))
 	router.Use(middleware.CORSMiddleware())
-
 	router.GET("/posts", func(c *gin.Context) {
-		// Captura os parâmetros de página e limite da query string
 		page, perPage := utils.GetPaginationParams(c.Request)
-
-		// Chama a função GetPaginatedPosts passando a página e o limite
 		posts, err := routes.GetPaginatedPosts(db, page, perPage)
 		if err != nil {
 			c.JSON(500, gin.H{
@@ -34,12 +30,11 @@ func main() {
 			})
 			return
 		}
-
-		// Retorna os posts paginados
 		c.JSON(200, posts)
 	})
 
 	router.GET("/search", routes.SearchPostsHandler(db))
+	router.DELETE("/delete/:id", routes.DeletePostHandler)
 
 	fmt.Println("Servidor rodando em http://localhost:8080")
 	err = router.Run(":8080")
