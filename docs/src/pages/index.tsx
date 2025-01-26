@@ -74,15 +74,15 @@ export default function Home() {
               <tbody className="table-body">
                 <tr>
                   <td className="method">limit</td>
-                  <td className="route">/character?limit=100</td>
+                  <td className="route">/posts?limit=100</td>
                 </tr>
                 <tr>
                   <td className="method">page</td>
-                  <td className="route">/character?page=2 (limit default is 10)</td>
+                  <td className="route">/posts?page=2 (limit default is 10)</td>
                 </tr>
                 <tr>
                   <td className="method">offset</td>
-                  <td className="route">/character?offset=3 (limit default is 10)</td>
+                  <td className="route">/posts?offset=3 (limit default is 10)</td>
                 </tr>
               </tbody>
             </table>
@@ -97,10 +97,10 @@ export default function Home() {
               </thead>
               <tbody className="table-body">
                 <tr>
-                  <td className="route">/character?sort=name:asc</td>
+                  <td className="route">/posts?sort=name:asc</td>
                 </tr>
                 <tr>
-                  <td className="route">/quote?sort=character:desc</td>
+                  <td className="route">/quote?sort=posts:desc</td>
                 </tr>
               </tbody>
             </table>
