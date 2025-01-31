@@ -1,5 +1,5 @@
-import { GOLANG_AVATAR } from "@/constants/images";
-import styled from "styled-components";
+import { GOLANG_AVATAR } from '@/constants/images';
+import styled from 'styled-components';
 
 export const StyledHeader = styled.header`
   background: #027d9c;
@@ -9,18 +9,20 @@ export const StyledHeader = styled.header`
   .container {
     max-width: 900px;
     margin: 0 auto;
-    font-family: Martel,serif;
+    font-family: Martel, serif;
     font-size: 30px;
     height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    text-align: center;
 
-    .title {
+    .box {
       margin-bottom: 20px;
-
-      span {
-        font-size: 40px;
+      .title {
+        span {
+          font-size: 40px;
+        }
       }
     }
 
@@ -33,4 +35,4 @@ export const StyledHeader = styled.header`
       background-size: 150px;
     }
   }
-`
+`;

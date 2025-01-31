@@ -1,10 +1,16 @@
 import { StyledHeader } from "./Header.styled";
 
 function Header(){
+
+  const smallText = "( Powered by Golang )"
+
   return (
     <StyledHeader>
       <div className="container">
-        <h1 className="title">Blog API: <span>Documentation</span></h1>
+        <div className="box">
+          <h1 className="title">Blog API: <span>Documentation</span></h1>
+          <small>{smallText}</small>
+        </div>
         <div  className="golang">
         </div>
       </div>
