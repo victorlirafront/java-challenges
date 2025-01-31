@@ -1,3 +1,4 @@
+import { GOLANG_AVATAR } from "@/constants/images";
 import styled from "styled-components";
 
 export const StyledHeader = styled.header`
@@ -25,7 +26,7 @@ export const StyledHeader = styled.header`
 
     .golang {
       min-height: 100%;
-      background-image: url(https://go.dev/images/gophers/ladder.svg);
+      background-image: url(${GOLANG_AVATAR});
       width: 156px;
       background-repeat: no-repeat;
       background-position: top center;

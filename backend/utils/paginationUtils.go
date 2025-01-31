@@ -7,7 +7,7 @@ import (
 
 func GetPaginationParams(r *http.Request) (int, int) {
 	page := 1
-	perPage := 10
+	perPage := 100000
 
 	pageQuery := r.URL.Query().Get("page")
 	if pageQuery != "" {

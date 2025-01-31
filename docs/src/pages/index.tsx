@@ -3,6 +3,7 @@ import Footer from '@/components/Footer/Footer';
 import Header from '@/components/Header/Header';
 import Head from 'next/head';
 
+
 export default function Home() {
   return (
     <>
@@ -37,18 +38,6 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody className="table-body">
-                <tr>
-                  <td className="method">GET</td>
-                  <td className="route">/posts</td>
-                  <td>Get all blog posts</td>
-                  <td>No</td>
-                </tr>
-                <tr>
-                  <td className="method">GET</td>
-                  <td className="route">/posts</td>
-                  <td>Get all blog posts</td>
-                  <td>No</td>
-                </tr>
                 <tr>
                   <td className="method">GET</td>
                   <td className="route">/posts</td>

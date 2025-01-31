@@ -1,0 +1,1 @@
+export const GOLANG_AVATAR = "https://ik.imagekit.io/Victorliradev/blog-api-golang/assets/golang_r6426sFI_.svg?updatedAt=1738358520557"
