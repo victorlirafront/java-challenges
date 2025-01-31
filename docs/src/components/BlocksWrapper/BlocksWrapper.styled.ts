@@ -61,6 +61,7 @@ export const StyledBlocksWrapper = styled.div`
 
         &.method {
           font-weight: bold;
+          font-size: 14px;
           color: #007bff;
           text-transform: uppercase;
         }
@@ -68,6 +69,7 @@ export const StyledBlocksWrapper = styled.div`
         &.route {
           font-family: monospace;
           color: #555;
+          line-height: 24px;
         }
       }
     }

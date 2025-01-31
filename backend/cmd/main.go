@@ -21,22 +21,27 @@ func main() {
 	router := gin.Default()
 	router.Use(middleware.DatabaseMiddleware(db))
 	router.Use(middleware.CORSMiddleware())
-	router.GET("/posts", func(c *gin.Context) {
-		page, perPage := utils.GetPaginationParams(c.Request)
+
+	router.GET("/posts", func(context *gin.Context) {
+		page, perPage := utils.GetPaginationParams(context)
+
 		posts, err := routes.GetPaginatedPosts(db, page, perPage)
 		if err != nil {
-			c.JSON(500, gin.H{
+			context.JSON(500, gin.H{
 				"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
 			})
 			return
 		}
-		c.JSON(200, posts)
+
+		context.JSON(200, posts)
 	})
 
 	router.GET("/search", routes.SearchPostsHandler(db))
+
 	router.DELETE("/delete/:id", routes.DeletePostHandler)
 
 	fmt.Println("Servidor rodando em http://localhost:8080")
+
 	err = router.Run(":8080")
 	if err != nil {
 		log.Fatalf("Erro ao iniciar o servidor: %v", err)

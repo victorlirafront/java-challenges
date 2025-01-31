@@ -12,11 +12,11 @@ import (
 
 // Função que retorna os parâmetros de paginação
 func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
+	return func(context *gin.Context) {
 		// Obtendo os parâmetros de página e limite da URL
-		page, perPage := utils.GetPaginationParams(c.Request)
-		query := c.DefaultQuery("query", "")
-		category := c.DefaultQuery("category", "all")
+		page, perPage := utils.GetPaginationParams(context)
+		query := context.DefaultQuery("query", "")
+		category := context.DefaultQuery("category", "all")
 
 		// Calculando o offset com base na página e no número de itens por página
 		offset := (page - 1) * perPage
@@ -51,7 +51,7 @@ func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 		// Executando a consulta para os posts
 		rows, err := db.Query(sqlQuery, params...)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao executar a query: %v", err)})
+			context.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao executar a query: %v", err)})
 			return
 		}
 		defer rows.Close()
@@ -73,7 +73,7 @@ func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 				&post.Author,
 				&post.Keywords,
 			); err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao escanear os resultados: %v", err)})
+				context.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao escanear os resultados: %v", err)})
 				return
 			}
 			posts = append(posts, post)
@@ -81,7 +81,7 @@ func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 
 		// Verificando erros ao iterar os resultados
 		if err := rows.Err(); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao iterar os resultados: %v", err)})
+			context.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao iterar os resultados: %v", err)})
 			return
 		}
 
@@ -101,7 +101,7 @@ func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 		var totalCount int
 		err = db.QueryRow(countQuery, paramsCount...).Scan(&totalCount)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao contar os posts: %v", err)})
+			context.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao contar os posts: %v", err)})
 			return
 		}
 
@@ -109,7 +109,7 @@ func SearchPostsHandler(db *sql.DB) gin.HandlerFunc {
 		totalPages := (totalCount + perPage - 1) / perPage // Total de páginas com base no número total de posts e no limite
 
 		// Retornando os resultados com a contagem de total de páginas
-		c.JSON(http.StatusOK, gin.H{
+		context.JSON(http.StatusOK, gin.H{
 			"data":       posts,
 			"page":       page,
 			"perPage":    perPage,

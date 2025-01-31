@@ -3,7 +3,6 @@ import Footer from '@/components/Footer/Footer';
 import Header from '@/components/Header/Header';
 import Head from 'next/head';
 
-
 export default function Home() {
   return (
     <>
@@ -48,48 +47,61 @@ export default function Home() {
             </table>
           </BlocksWrapper>
           <BlocksWrapper>
-            <h1 className="title">May I use pagination, sorting and filtering?</h1>
+            <h1 className="title">May I use pagination</h1>
             <p className="paragraph">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, consectetur?
+              Yes, you can add pagination, sorting and filtering options to your API requests.
             </p>
             <h1 className="title">Pagination</h1>
             <table className="api-table">
               <thead className="table-header">
                 <tr>
-                  <th scope="col">Option</th>
+                  <th scope="col">Method</th>
                   <th scope="col">Example</th>
                 </tr>
               </thead>
               <tbody className="table-body">
                 <tr>
-                  <td className="method">limit</td>
-                  <td className="route">/posts?limit=100</td>
+                  <td className="method">GET</td>
+                  <td className="route">/posts?page=1&limit=10 (limit default is 10)</td>
                 </tr>
                 <tr>
-                  <td className="method">page</td>
-                  <td className="route">/posts?page=2 (limit default is 10)</td>
-                </tr>
-                <tr>
-                  <td className="method">offset</td>
-                  <td className="route">/posts?offset=3 (limit default is 10)</td>
+                  <td className="method">GET</td>
+                  <td className="route">
+                    <p>
+                      <strong>1st page, 10 items:</strong> <code>/posts?page=1&limit=10</code>
+                    </p>
+                    <p>
+                      <strong>2nd page, 10 items:</strong> <code>/posts?page=2&limit=10</code>
+                    </p>
+                    <p>
+                      <strong>3rd page, 20 items:</strong> <code>/posts?page=3&limit=20</code>
+                    </p>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </BlocksWrapper>
           <BlocksWrapper>
-            <h1 className="title">Sorting</h1>
+            <h1 className="title">Search</h1>
             <table className="api-table">
               <thead className="table-header">
                 <tr>
+                <th scope="col">method</th>
                   <th scope="col">Examples</th>
                 </tr>
               </thead>
               <tbody className="table-body">
                 <tr>
-                  <td className="route">/posts?sort=name:asc</td>
+                   <td className="method">GET</td>
+                  <td className="route">/search?query=javascript&category=all</td>
                 </tr>
                 <tr>
-                  <td className="route">/quote?sort=posts:desc</td>
+                   <td className="method">GET</td>
+                  <td className="route">/search?query=typescript&category=web</td>
+                </tr>
+                <tr>
+                   <td className="method">GET</td>
+                  <td className="route">/search?query=react&category=mobile</td>
                 </tr>
               </tbody>
             </table>
