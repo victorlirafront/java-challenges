@@ -2,7 +2,7 @@ import { StyledHeader } from "./Header.styled";
 
 function Header(){
 
-  const smallText = "( Powered by Golang )"
+  const smallText = "(Developed with Golang)"
 
   return (
     <StyledHeader>
