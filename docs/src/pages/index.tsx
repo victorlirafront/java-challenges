@@ -43,6 +43,12 @@ export default function Home() {
                   <td>Get all blog posts</td>
                   <td>No</td>
                 </tr>
+                <tr>
+                  <td className="method" style={{color: 'red'}}>Delete</td>
+                  <td className="route">/delete/10</td>
+                  <td>Delete a specific post</td>
+                  <td>Yes</td>
+                </tr>
               </tbody>
             </table>
           </BlocksWrapper>
