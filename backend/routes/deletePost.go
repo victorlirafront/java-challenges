@@ -25,32 +25,31 @@ func DeletePostHandler(c *gin.Context) {
 		return
 	}
 
+	// Recupera o ID do post a ser deletado
 	postID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
 		return
 	}
 
+	// Verifica se o post existe antes de tentar deletá-lo
+	var existsCheck int
+	err = sqlDb.QueryRow("SELECT COUNT(1) FROM posts WHERE id = ?", postID).Scan(&existsCheck)
+	if err != nil || existsCheck == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Post não encontrado"})
+		return
+	}
+
+	// Deleta o post
 	query := "DELETE FROM posts WHERE id = ?"
-	result, err := sqlDb.Exec(query, postID)
+	_, err = sqlDb.Exec(query, postID)
 	if err != nil {
 		log.Printf("Erro ao deletar post: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar post"})
 		return
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		log.Printf("Erro ao verificar linhas afetadas: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro interno"})
-		return
-	}
-
-	if rowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Post não encontrado"})
-		return
-	}
-
+	// Retorna a resposta de sucesso
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("Post com ID %d deletado com sucesso", postID),
 	})
