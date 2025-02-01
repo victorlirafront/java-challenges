@@ -7,8 +7,8 @@ import (
 )
 
 func DatabaseMiddleware(db *sql.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Set("db", db)
-		c.Next()
+	return func(context *gin.Context) {
+		context.Set("db", db)
+		context.Next()
 	}
 }
