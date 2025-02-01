@@ -50,19 +50,25 @@ export default function Home() {
                   <td>No</td>
                 </tr>
                 <tr>
-                  <td className="method" style={{color: '#ffa500'}}>Patch  </td>
+                  <td className="method" style={{ color: '#ffa500' }}>
+                    Patch{' '}
+                  </td>
                   <td className="route">/posts/10</td>
                   <td>Update a specific post</td>
                   <td>Yes - Admin only</td>
                 </tr>
                 <tr>
-                  <td className="method" style={{color: 'green'}}>POST</td>
+                  <td className="method" style={{ color: 'green' }}>
+                    POST
+                  </td>
                   <td className="route">/post</td>
                   <td>Create a new post</td>
                   <td>Yes - Admin only</td>
                 </tr>
                 <tr>
-                  <td className="method" style={{color: 'red'}}>Delete</td>
+                  <td className="method" style={{ color: 'red' }}>
+                    Delete
+                  </td>
                   <td className="route">/delete/10</td>
                   <td>Delete a specific post</td>
                   <td>Yes - Admin only</td>
@@ -110,25 +116,47 @@ export default function Home() {
             <table className="api-table">
               <thead className="table-header">
                 <tr>
-                <th scope="col">method</th>
+                  <th scope="col">method</th>
                   <th scope="col">Examples</th>
                 </tr>
               </thead>
               <tbody className="table-body">
                 <tr>
-                   <td className="method">GET</td>
+                  <td className="method">GET</td>
                   <td className="route">/search?query=javascript&category=all</td>
                 </tr>
                 <tr>
-                   <td className="method">GET</td>
+                  <td className="method">GET</td>
                   <td className="route">/search?query=typescript&category=web</td>
                 </tr>
                 <tr>
-                   <td className="method">GET</td>
+                  <td className="method">GET</td>
                   <td className="route">/search?query=react&category=mobile</td>
                 </tr>
               </tbody>
             </table>
+          </BlocksWrapper>
+          <BlocksWrapper>
+            <h1 className="title">How to Contribute to This Project</h1>
+
+            <p className='paragraph'>
+              This project is open-source ❤️, I we’d love for you to help make
+              it even better. Whether you're fixing bugs, adding features, or improving
+              documentation, your input is always welcome. You can start by visiting the{' '}
+              <a
+                href="https://github.com/victorlirafront/blog-api"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub repository
+              </a>{' '}
+              to explore the code and get involved.
+            </p>
+
+            <p className='paragraph'>
+              Don't hesitate to fork the project, submit issues, and create pull requests. I can't
+              wait to see what you'll bring to the project!
+            </p>
           </BlocksWrapper>
         </div>
         <Footer />

@@ -22,7 +22,7 @@ export const StyledBlocksWrapper = styled.div`
 
   .paragraph {
     font-size: 18px;
-    line-height: 2.3rem;
+    line-height: 30px;
   }
 
   .api-table {
