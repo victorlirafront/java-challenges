@@ -47,7 +47,7 @@ export default function Home() {
                   <td className="method">Get</td>
                   <td className="route">/post/10</td>
                   <td>Get a specific post</td>
-                  <td>No</td>
+                  <td>Yes - Regular user</td>
                 </tr>
                 <tr>
                   <td className="method" style={{ color: '#ffa500' }}>

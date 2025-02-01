@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,38 +30,26 @@ func main() {
 
 	// Definir rotas
 	// Rota para obter posts paginados
-	router.GET("/posts", middlewares.AuthenticateRead, func(c *gin.Context) {
-		// Recupera o role do usuário a partir do contexto
-		role, _ := c.Get("role")
+	router.GET("/posts", func(c *gin.Context) {
+		// Pega o parâmetro de paginação
+		page, perPage := utils.GetPaginationParams(c)
 
-		fmt.Print("role ", role)
-
-		// Verifica se o usuário tem permissão para acessar os posts
-		if role == "regular" || role == "admin" {
-			// Pega o parâmetro de paginação
-			page, perPage := utils.GetPaginationParams(c)
-
-			// Tenta buscar os posts com paginação
-			posts, err := routes.GetPaginatedPosts(db, page, perPage)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{
-					"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
-				})
-				return
-			}
-
-			// Retorna os posts encontrados
-			c.JSON(http.StatusOK, posts)
-		} else {
-			// Se o role não for regular ou admin, retorna erro de acesso negado
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": "Acesso negado. Permissão insuficiente.",
+		// Tenta buscar os posts com paginação
+		posts, err := routes.GetPaginatedPosts(db, page, perPage)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
 			})
+			return
 		}
+
+		// Retorna os posts encontrados
+		c.JSON(http.StatusOK, posts)
 	})
 
 	// Rota de busca de posts
-	router.GET("/search", middlewares.AuthenticateRead, routes.SearchPostsHandler(db))
+	// Rota de busca
+	router.GET("/search", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), routes.SearchPostsHandler(db))
 
 	// Definir rota para criar um post
 	router.POST("/posts", middlewares.AuthenticateAdmin, func(c *gin.Context) {
@@ -68,7 +57,7 @@ func main() {
 	})
 
 	// Rota para obter um post específico pelo ID
-	router.GET("/posts/:id", func(c *gin.Context) {
+	router.GET("/posts/:id", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), func(c *gin.Context) {
 		postID := c.Param("id")
 
 		fmt.Print(postID)
@@ -93,12 +82,12 @@ func main() {
 
 	// Gerar o token JWT de um usuário administrador (fake)
 
-	// userAdmin := os.Getenv("ADMIN_USER_ID") //pay attentino
-	// tokenAdmin, err := utils.GenerateJWT(userAdmin)
-	// if err != nil {
-	// 	fmt.Println("Erro ao gerar token:", err)
-	// }
-	// fmt.Println("Token gerado:", tokenAdmin)
+	userAdmin := os.Getenv("REGULAR_USER_ID")
+	tokenAdmin, err := utils.GenerateJWT(userAdmin)
+	if err != nil {
+		fmt.Println("Erro ao gerar token:", err)
+	}
+	fmt.Println("Token gerado:", tokenAdmin)
 
 	// Rota para deletar um post (requer autenticação)
 	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
