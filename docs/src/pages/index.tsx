@@ -47,7 +47,7 @@ export default function Home() {
                   <td className="method" style={{color: 'red'}}>Delete</td>
                   <td className="route">/delete/10</td>
                   <td>Delete a specific post</td>
-                  <td>Yes</td>
+                  <td>Yes - Admin only</td>
                 </tr>
               </tbody>
             </table>
