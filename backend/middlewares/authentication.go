@@ -10,8 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Função para autenticação padrão (somente leitura) com permissões baseadas em role
-func AuthenticateRead(c *gin.Context) {
+// Função para carregar o arquivo .env
+func Authenticate(c *gin.Context) {
 	// Pega o token do cabeçalho Authorization
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
@@ -41,11 +41,9 @@ func AuthenticateRead(c *gin.Context) {
 	// Verifica e valida o token
 	claims := &jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		// Aqui usamos a chave secreta do .env para verificar o token
 		return []byte(secretKey), nil
 	})
-
-	fmt.Print("regular token ", token)
-
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token inválido"})
 		c.Abort()
@@ -54,29 +52,14 @@ func AuthenticateRead(c *gin.Context) {
 
 	// Checa se a chave "user_id" existe e é uma string válida no claims
 	userID, ok := (*claims)["user_id"].(string)
+	fmt.Print("new", userID)
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "ID do usuário não encontrado no token"})
 		c.Abort()
 		return
 	}
 
-	// Verifica se o ID do usuário é o ID do administrador ou do usuário regular
-	adminUserID := os.Getenv("ADMIN_USER_ID")
-	regularUserID := os.Getenv("REGULAR_USER_ID")
-
-	if userID == adminUserID {
-		// Se for o admin, armazena isso no contexto
-		c.Set("role", "admin")
-	} else if userID == regularUserID {
-		// Se for o usuário regular, armazena isso no contexto
-		c.Set("role", "regular")
-	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Usuário não autorizado"})
-		c.Abort()
-		return
-	}
-
-	// Armazena o userID no contexto
+	// Apenas armazena o userID no contexto
 	c.Set("userID", userID)
 	c.Next()
 }

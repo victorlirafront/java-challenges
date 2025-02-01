@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,41 +29,25 @@ func main() {
 
 	// Definir rotas
 	// Rota para obter posts paginados
-	router.GET("/posts", middlewares.AuthenticateRead, func(c *gin.Context) {
-		// Recupera o role do usuário a partir do contexto
-		role, _ := c.Get("role")
+	router.GET("/posts", func(context *gin.Context) {
+		page, perPage := utils.GetPaginationParams(context)
 
-		fmt.Print("role ", role)
-
-		// Verifica se o usuário tem permissão para acessar os posts
-		if role == "regular" || role == "admin" {
-			// Pega o parâmetro de paginação
-			page, perPage := utils.GetPaginationParams(c)
-
-			// Tenta buscar os posts com paginação
-			posts, err := routes.GetPaginatedPosts(db, page, perPage)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{
-					"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
-				})
-				return
-			}
-
-			// Retorna os posts encontrados
-			c.JSON(http.StatusOK, posts)
-		} else {
-			// Se o role não for regular ou admin, retorna erro de acesso negado
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": "Acesso negado. Permissão insuficiente.",
+		posts, err := routes.GetPaginatedPosts(db, page, perPage)
+		if err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{
+				"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
 			})
+			return
 		}
+
+		context.JSON(http.StatusOK, posts)
 	})
 
 	// Rota de busca de posts
-	router.GET("/search", middlewares.AuthenticateRead, routes.SearchPostsHandler(db))
+	router.GET("/search", routes.SearchPostsHandler(db))
 
 	// Definir rota para criar um post
-	router.POST("/posts", middlewares.AuthenticateAdmin, func(c *gin.Context) {
+	router.POST("/posts", middlewares.Authenticate, func(c *gin.Context) {
 		routes.CreatePost(db, c) // Chama a função de criar post
 	})
 
@@ -88,21 +71,21 @@ func main() {
 	})
 
 	// Rota para atualizar um post parcialmente pelo ID
-	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin, func(c *gin.Context) {
+	router.PATCH("/posts/:id", middlewares.Authenticate, func(c *gin.Context) {
 		routes.CallUpdatePost(c)
 	})
 
 	// Gerar o token JWT de um usuário administrador (fake)
 
-	userAdmin := os.Getenv("ADMIN_USER_ID")
-	tokenAdmin, err := utils.GenerateJWT(userAdmin)
-	if err != nil {
-		fmt.Println("Erro ao gerar token:", err)
-	}
-	fmt.Println("Token gerado:", tokenAdmin)
+	// userId := os.Getenv("ADMIN_USER_ID")
+	// token, err := utils.GenerateJWT(userId)
+	// if err != nil {
+	// 	fmt.Println("Erro ao gerar token:", err)
+	// }
+	// fmt.Println("Token gerado:", token)
 
 	// Rota para deletar um post (requer autenticação)
-	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
+	router.DELETE("/delete/:id", middlewares.Authenticate, routes.DeletePostHandler)
 
 	// Iniciar servidor
 	fmt.Println("Servidor rodando em http://localhost:8080")
