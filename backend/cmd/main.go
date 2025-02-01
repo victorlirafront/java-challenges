@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -94,12 +93,12 @@ func main() {
 
 	// Gerar o token JWT de um usuário administrador (fake)
 
-	userAdmin := os.Getenv("ADMIN_USER_ID")
-	tokenAdmin, err := utils.GenerateJWT(userAdmin)
-	if err != nil {
-		fmt.Println("Erro ao gerar token:", err)
-	}
-	fmt.Println("Token gerado:", tokenAdmin)
+	// userAdmin := os.Getenv("ADMIN_USER_ID") //pay attentino
+	// tokenAdmin, err := utils.GenerateJWT(userAdmin)
+	// if err != nil {
+	// 	fmt.Println("Erro ao gerar token:", err)
+	// }
+	// fmt.Println("Token gerado:", tokenAdmin)
 
 	// Rota para deletar um post (requer autenticação)
 	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
