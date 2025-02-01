@@ -66,6 +66,9 @@ func main() {
 		c.JSON(http.StatusOK, post)
 	})
 
+	// Rota para atualizar um post parcialmente pelo ID
+	router.PATCH("/posts/:id", middlewares.Authenticate, routes.CallUpdatePost)
+
 	// Gerar o token JWT de um usuário administrador (fake)
 	userId := os.Getenv("ADMIN_USER_ID")
 	// token, err := utils.GenerateJWT(userId)
