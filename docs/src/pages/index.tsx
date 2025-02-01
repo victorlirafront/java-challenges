@@ -44,6 +44,12 @@ export default function Home() {
                   <td>No</td>
                 </tr>
                 <tr>
+                  <td className="method">Get</td>
+                  <td className="route">/post/10</td>
+                  <td>Get a specific post</td>
+                  <td>No</td>
+                </tr>
+                <tr>
                   <td className="method" style={{color: 'red'}}>Delete</td>
                   <td className="route">/delete/10</td>
                   <td>Delete a specific post</td>
