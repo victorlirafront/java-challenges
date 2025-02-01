@@ -50,6 +50,12 @@ export default function Home() {
                   <td>No</td>
                 </tr>
                 <tr>
+                  <td className="method" style={{color: 'orange'}}>Patch  </td>
+                  <td className="route">/posts/10</td>
+                  <td>Update a specific post</td>
+                  <td>Yes - Admin only</td>
+                </tr>
+                <tr>
                   <td className="method" style={{color: 'red'}}>Delete</td>
                   <td className="route">/delete/10</td>
                   <td>Delete a specific post</td>
