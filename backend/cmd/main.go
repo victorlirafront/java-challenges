@@ -47,6 +47,11 @@ func main() {
 	// Rota de busca de posts
 	router.GET("/search", routes.SearchPostsHandler(db))
 
+	// Definir rota para criar um post
+	router.POST("/posts", middlewares.Authenticate, func(c *gin.Context) {
+		routes.CreatePost(db, c) // Chama a função de criar post
+	})
+
 	// Rota para obter um post específico pelo ID
 	router.GET("/posts/:id", func(c *gin.Context) {
 		postID := c.Param("id")
@@ -67,7 +72,9 @@ func main() {
 	})
 
 	// Rota para atualizar um post parcialmente pelo ID
-	router.PATCH("/posts/:id", middlewares.Authenticate, routes.CallUpdatePost)
+	router.PATCH("/posts/:id", middlewares.Authenticate, func(c *gin.Context) {
+		routes.CallUpdatePost(c)
+	})
 
 	// Gerar o token JWT de um usuário administrador (fake)
 	userId := os.Getenv("ADMIN_USER_ID")

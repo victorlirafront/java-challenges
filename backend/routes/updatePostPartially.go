@@ -93,7 +93,6 @@ func stringJoin(slice []string, separator string) string {
 	}
 	return result
 }
-
 func CallUpdatePost(c *gin.Context) {
 	postID := c.Param("id") // Obtém o ID do post da URL
 
