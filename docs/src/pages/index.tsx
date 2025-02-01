@@ -141,7 +141,7 @@ export default function Home() {
 
             <p className='paragraph'>
               This project is open-source ❤️, I we’d love for you to help make
-              it even better. Whether you're fixing bugs, adding features, or improving
+              it even better. Whether you&apos;re fixing bugs, adding features, or improving
               documentation, your input is always welcome. You can start by visiting the{' '}
               <a
                 href="https://github.com/victorlirafront/blog-api"
@@ -154,8 +154,8 @@ export default function Home() {
             </p>
 
             <p className='paragraph'>
-              Don't hesitate to fork the project, submit issues, and create pull requests. I can't
-              wait to see what you'll bring to the project!
+              Don&apos;t hesitate to fork the project, submit issues, and create pull requests. I can&apos;t
+              wait to see what you&apos;ll bring to the project!
             </p>
           </BlocksWrapper>
         </div>
