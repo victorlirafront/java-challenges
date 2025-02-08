@@ -27,33 +27,6 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func Authorize(c *gin.Context) error {
-	// Obtém os tokens dos cookies
-	sessionToken, err := c.Cookie("session_token")
-	if err != nil {
-		return fmt.Errorf("session token not found")
-	}
-
-	csrfToken, err := c.Cookie("csrf_token")
-	if err != nil {
-		return fmt.Errorf("csrf token not found")
-	}
-
-	// Acessa o banco de dados para verificar os tokens
-	db := c.MustGet("db").(*sql.DB)
-
-	var user models.User
-	err = db.QueryRow("SELECT id, session_token, csrf_token FROM users WHERE session_token = ? AND csrf_token = ?", sessionToken, csrfToken).Scan(&user.ID, &user.SessionToken, &user.CSRFToken)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return fmt.Errorf("invalid session or csrf token")
-		}
-		return fmt.Errorf("error while accessing database")
-	}
-
-	return nil
-}
-
 func register(c *gin.Context) {
 	// Acessando o db do contexto, mas agora como *sql.DB
 	db := c.MustGet("db").(*sql.DB)
@@ -181,7 +154,7 @@ func login(c *gin.Context) {
 
 func logout(c *gin.Context) {
 	// Chama a função Authorize para verificar a autenticação e CSRF
-	if err := Authorize(c); err != nil {
+	if err := middlewares.SessionAuthMiddleware(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Unauthorized",
 		})
@@ -221,7 +194,7 @@ func logout(c *gin.Context) {
 
 func protected(c *gin.Context) {
 	// Chama a função Authorize para verificar a autenticação e CSRF
-	if err := Authorize(c); err != nil {
+	if err := middlewares.SessionAuthMiddleware(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Unauthorized",
 		})
