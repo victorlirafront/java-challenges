@@ -6,7 +6,6 @@ import (
 	"log"
 )
 
-// Gera um token aleatório com o comprimento especificado
 func GenerateToken(length int) string {
 	bytes := make([]byte, length)
 

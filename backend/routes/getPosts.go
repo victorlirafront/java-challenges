@@ -9,7 +9,6 @@ import (
 func GetPaginatedPosts(db *sql.DB, page, perPage int) ([]models.Post, error) {
 	offset := (page - 1) * perPage
 
-	// Consulta SQL com paginação
 	query := fmt.Sprintf("SELECT id, title, content, date, category FROM posts LIMIT %d OFFSET %d", perPage, offset)
 
 	rows, err := db.Query(query)
@@ -28,7 +27,6 @@ func GetPaginatedPosts(db *sql.DB, page, perPage int) ([]models.Post, error) {
 		posts = append(posts, post)
 	}
 
-	// Verifica se houve erro ao iterar sobre as linhas
 	if err = rows.Err(); err != nil {
 		return nil, fmt.Errorf("erro ao iterar sobre os posts: %v", err)
 	}

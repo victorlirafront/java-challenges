@@ -15,13 +15,11 @@ func hasPassword(password string) (string, error) {
 }
 
 func Register(c *gin.Context) {
-	// Acessando o db do contexto, mas agora como *sql.DB
 	db := c.MustGet("db").(*sql.DB)
 
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	// Verificar se o nome de usuário e a senha têm pelo menos 8 caracteres
 	if len(username) < 8 || len(password) < 8 {
 		c.JSON(http.StatusNotAcceptable, gin.H{
 			"error": "Username and password must be at least 8 characters long",
@@ -29,7 +27,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Verifica se o nome de usuário já existe no banco de dados
 	var user models.User
 	result := db.QueryRow("SELECT * FROM users WHERE username = ?", username)
 	err := result.Scan(&user.ID, &user.Username, &user.HashedPassword)
@@ -40,7 +37,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Gerar a senha criptografada
 	hashedPassword, err := hasPassword(password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -49,7 +45,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Criar um novo usuário no banco de dados usando Query ou Exec (sem GORM)
 	_, err = db.Exec("INSERT INTO users (username, hashed_password) VALUES (?, ?)", username, hashedPassword)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

@@ -10,14 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UpdatePostPartially atualiza apenas os campos específicos de um post no banco de dados
 func updatePostPartially(db *sql.DB, postID string, postUpdate *models.Post) error {
-	// Monta a consulta dinamicamente com base nos campos que foram passados
 	query := "UPDATE posts SET "
 	params := []interface{}{}
 	setClauses := []string{}
 
-	// Verifica quais campos foram passados e monta a consulta de acordo
 	if postUpdate.Title != "" {
 		setClauses = append(setClauses, "title = ?")
 		params = append(params, postUpdate.Title)
@@ -59,16 +56,13 @@ func updatePostPartially(db *sql.DB, postID string, postUpdate *models.Post) err
 		params = append(params, postUpdate.Keywords)
 	}
 
-	// Se não houver campos para atualizar, retorna um erro
 	if len(setClauses) == 0 {
 		return fmt.Errorf("nenhum campo para atualizar")
 	}
 
-	// Junta as cláusulas SET e adiciona o WHERE corretamente
 	query += joinClauses(setClauses) + " WHERE id = ?"
 	params = append(params, postID)
 
-	// Executa a atualização do post
 	_, err := db.Exec(query, params...)
 	if err != nil {
 		return fmt.Errorf("erro ao atualizar o post: %v", err)
@@ -77,12 +71,10 @@ func updatePostPartially(db *sql.DB, postID string, postUpdate *models.Post) err
 	return nil
 }
 
-// Função auxiliar para juntar as cláusulas SET corretamente
 func joinClauses(clauses []string) string {
 	return stringJoin(clauses, ", ")
 }
 
-// Função auxiliar para juntar uma slice de strings com um separador
 func stringJoin(slice []string, separator string) string {
 	result := ""
 	for i, str := range slice {
@@ -94,9 +86,8 @@ func stringJoin(slice []string, separator string) string {
 	return result
 }
 func CallUpdatePost(c *gin.Context) {
-	postID := c.Param("id") // Obtém o ID do post da URL
+	postID := c.Param("id")
 
-	// Conexão com o banco de dados (feito aqui para garantir que a função tem acesso a ela)
 	db, err := database.CreateDatabaseConnection()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -106,7 +97,6 @@ func CallUpdatePost(c *gin.Context) {
 	}
 	defer db.Close()
 
-	// Estrutura para armazenar os dados que podem ser atualizados
 	var postUpdate models.Post
 	if err := c.ShouldBindJSON(&postUpdate); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -115,7 +105,6 @@ func CallUpdatePost(c *gin.Context) {
 		return
 	}
 
-	// Chama a função para atualizar o post com os campos enviados
 	err = updatePostPartially(db, postID, &postUpdate)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -124,7 +113,6 @@ func CallUpdatePost(c *gin.Context) {
 		return
 	}
 
-	// Retorna uma mensagem de sucesso após a atualização
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Post atualizado com sucesso.",
 	})

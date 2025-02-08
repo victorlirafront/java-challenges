@@ -9,7 +9,6 @@ import (
 )
 
 func SessionAuthMiddleware(c *gin.Context) error {
-	// Obtém os tokens dos cookies
 	sessionToken, err := c.Cookie("session_token")
 	if err != nil {
 		return fmt.Errorf("session token not found")
@@ -20,7 +19,6 @@ func SessionAuthMiddleware(c *gin.Context) error {
 		return fmt.Errorf("csrf token not found")
 	}
 
-	// Acessa o banco de dados para verificar os tokens
 	db := c.MustGet("db").(*sql.DB)
 
 	var user models.User

@@ -11,7 +11,6 @@ import (
 )
 
 func Protected(c *gin.Context) {
-	// Chama a função Authorize para verificar a autenticação e CSRF
 	if err := middlewares.SessionAuthMiddleware(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Unauthorized",
@@ -19,13 +18,11 @@ func Protected(c *gin.Context) {
 		return
 	}
 
-	// Obtém o parâmetro "username" do formulário ou query string, dependendo da requisição
 	username := c.DefaultPostForm("username", "")
 	if username == "" {
-		username = c.DefaultQuery("username", "") // Usado se for uma requisição GET
+		username = c.DefaultQuery("username", "")
 	}
 
-	// Verifica se o parâmetro username está presente
 	if username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Username is required",
@@ -33,7 +30,6 @@ func Protected(c *gin.Context) {
 		return
 	}
 
-	// Recupera o session_token e csrf_token dos cookies
 	sessionToken, err := c.Cookie("session_token")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -50,7 +46,6 @@ func Protected(c *gin.Context) {
 		return
 	}
 
-	// Acessa o banco de dados para verificar o usuário com base no sessionToken e csrfToken
 	db := c.MustGet("db").(*sql.DB)
 
 	var user models.User
@@ -68,7 +63,6 @@ func Protected(c *gin.Context) {
 		return
 	}
 
-	// Retorna uma mensagem de sucesso se a validação for bem-sucedida
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("CSRF validation successful! Welcome, %s", username),
 	})
