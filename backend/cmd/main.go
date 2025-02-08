@@ -73,7 +73,12 @@ func register(c *gin.Context) {
 		return
 	}
 
-	fmt.Print(hashedPassword)
+	users[username] = models.Login{
+		HashedPassword: hashedPassword,
+	}
+
+	fmt.Print("hashedPassword", hashedPassword)
+	fmt.Print("users", users)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User registered successfully",
@@ -84,6 +89,9 @@ func login(c *gin.Context) {
 	// Obtém os parâmetros do corpo da requisição
 	username := c.PostForm("username")
 	password := c.PostForm("password")
+
+	fmt.Println("username", username)
+	fmt.Println("password", password)
 
 	// Verifica se o usuário existe no mapa
 	user, ok := users[username]
