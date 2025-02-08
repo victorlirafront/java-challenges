@@ -8,10 +8,12 @@ import (
 	"blog-api/utils"
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +21,7 @@ import (
 )
 
 var users = map[string]models.Login{}
+var AuthError = errors.New("Unauthorized")
 
 func hasPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
@@ -38,6 +41,60 @@ func generateToken(length int) string {
 	}
 
 	return base64.URLEncoding.EncodeToString(bytes)
+}
+
+// Função para remover o padding do token CSRF
+func removePadding(token string) string {
+	// Substituir o caractere "%3D" (URL encoding) por "="
+	token = strings.ReplaceAll(token, "%3D", "=")
+
+	// Se necessário, decodifique o token para garantir que ele não contenha padding de mais
+	return token
+}
+
+func Authorize(c *gin.Context) error {
+	// Obtém o valor do parâmetro "username" da requisição
+	username := c.DefaultPostForm("username", "") // Para POST, ou c.DefaultQuery("username", "") para GET
+	if username == "" {
+		// Adiciona log para verificar se o username está vazio
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Username is missing"})
+		return AuthError
+	}
+
+	user, ok := users[username]
+	if !ok {
+		// Adiciona log para verificar se o usuário não foi encontrado
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username"})
+		return AuthError
+	}
+
+	// Obtém o cookie de sessão
+	sessionToken, err := c.Cookie("session_token")
+	if err != nil || sessionToken == "" || sessionToken != user.SessionToken {
+		// Adiciona log para verificar se o cookie de sessão não está presente ou é inválido
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid session token"})
+		return AuthError
+	}
+
+	// Obtém o token CSRF dos cabeçalhos
+	csrfToken := c.GetHeader("X-CSRF-Token")
+
+	// Remover o padding dos tokens
+	csrfToken = removePadding(csrfToken)
+	userToken := removePadding(user.CSRFToken)
+
+	fmt.Println("csrfToken:", csrfToken)
+	fmt.Println("userToken:", userToken)
+
+	// Comparar os tokens CSRF (com e sem padding)
+	if csrfToken != userToken || csrfToken == "" {
+		// Adiciona log para verificar se o token CSRF está ausente ou não corresponde
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or missing CSRF token"})
+		return AuthError
+	}
+
+	// Se passou todas as verificações, retorna nil (autorizado)
+	return nil
 }
 
 func register(c *gin.Context) {
@@ -124,7 +181,7 @@ func login(c *gin.Context) {
 
 	// Configurações do cookie
 	cookieExpireDuration := 24 * time.Hour // 24 horas
-	cookieSecure := true                   // Defina como true se usar HTTPS
+	cookieSecure := false                  // Defina como true se usar HTTPS
 	cookieHttpOnly := true                 // Impede o acesso via JavaScript
 
 	// Calcula a data de expiração dos cookies
@@ -144,11 +201,50 @@ func login(c *gin.Context) {
 }
 
 func logout(c *gin.Context) {
-	// Adicione a lógica de logout aqui
+	// Chama a função Authorize para verificar a autenticação e CSRF
+	if err := Authorize(c); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	// Limpa os cookies de sessão e CSRF
+	c.SetCookie("session_token", "", -1, "/", "", true, true) // Cookie com HttpOnly
+	c.SetCookie("csrf_token", "", -1, "/", "", true, false)   // Cookie sem HttpOnly
+
+	// Limpa os tokens do usuário no banco de dados
+	username := c.DefaultPostForm("username", "")
+	user, _ := users[username]
+	user.SessionToken = ""
+	user.CSRFToken = ""
+	users[username] = user
+
+	// Retorna resposta de sucesso
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logged out successfully",
+	})
 }
 
 func protected(c *gin.Context) {
-	// Adicione a lógica de acesso protegido aqui
+	// Chama a função Authorize para verificar a autenticação e CSRF
+	if err := Authorize(c); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	// Obtém o parâmetro "username" do formulário ou query string, dependendo da requisição
+	username := c.DefaultPostForm("username", "")
+	if username == "" {
+		username = c.DefaultQuery("username", "") // Usado se for uma requisição GET
+	}
+
+	// Retorna uma mensagem de sucesso
+	c.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("CSRF validation successful! Welcome, %s", username),
+	})
 }
 
 func main() {
@@ -167,10 +263,10 @@ func main() {
 	router.Use(middlewares.CORSMiddleware())
 
 	// Definir rotas
-	router.POST("/register", register)  // Rota de registro
-	router.POST("/login", login)        // Rota de login
-	router.POST("/logout", logout)      // Rota de logout
-	router.GET("/protected", protected) // Rota de acesso protegido
+	router.POST("/register", register)   // Rota de registro
+	router.POST("/login", login)         // Rota de login
+	router.POST("/logout", logout)       // Rota de logout
+	router.POST("/protected", protected) // Rota de acesso protegido
 
 	// Configuração para posts
 	router.GET("/posts", func(c *gin.Context) {
