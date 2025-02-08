@@ -38,46 +38,29 @@ func removePadding(token string) string {
 }
 
 func Authorize(c *gin.Context) error {
-	username := c.DefaultPostForm("username", "") // Para POST, ou c.DefaultQuery("username", "") para GET
-	if username == "" {
-		// Adiciona log para verificar se o username está vazio
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Username is missing"})
-		return AuthError
-	}
-
-	user, ok := users[username]
-	if !ok {
-		// Adiciona log para verificar se o usuário não foi encontrado
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username"})
-		return AuthError
-	}
-
-	// Obtém o cookie de sessão
+	// Obtém os tokens dos cookies
 	sessionToken, err := c.Cookie("session_token")
-	if err != nil || sessionToken == "" || sessionToken != user.SessionToken {
-		// Adiciona log para verificar se o cookie de sessão não está presente ou é inválido
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid session token"})
-		return AuthError
+	if err != nil {
+		return fmt.Errorf("session token not found")
 	}
 
-	// Obtém o token CSRF dos cabeçalhos
-	csrfToken := c.GetHeader("X-CSRF-Token")
-
-	// Remover o padding dos tokens
-	csrfToken = removePadding(csrfToken)
-	userToken := removePadding(user.CSRFToken)
-
-	fmt.Println("csrfToken:", csrfToken)
-	fmt.Println("userToken:", userToken)
-
-	// Comparar os tokens CSRF (com e sem padding)
-	if csrfToken != userToken || csrfToken == "" {
-		// Adiciona log para verificar se o token CSRF está ausente ou não corresponde
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or missing CSRF token"})
-		return AuthError
+	csrfToken, err := c.Cookie("csrf_token")
+	if err != nil {
+		return fmt.Errorf("csrf token not found")
 	}
 
-	// Se passou todas as verificações, retorna nil (autorizado)
+	// Acessa o banco de dados para verificar os tokens
+	db := c.MustGet("db").(*sql.DB)
+
+	var user models.User
+	err = db.QueryRow("SELECT id, session_token, csrf_token FROM users WHERE session_token = ? AND csrf_token = ?", sessionToken, csrfToken).Scan(&user.ID, &user.SessionToken, &user.CSRFToken)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return fmt.Errorf("invalid session or csrf token")
+		}
+		return fmt.Errorf("error while accessing database")
+	}
+
 	return nil
 }
 
@@ -247,7 +230,50 @@ func protected(c *gin.Context) {
 		username = c.DefaultQuery("username", "") // Usado se for uma requisição GET
 	}
 
-	// Retorna uma mensagem de sucesso
+	// Verifica se o parâmetro username está presente
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Username is required",
+		})
+		return
+	}
+
+	// Recupera o session_token e csrf_token dos cookies
+	sessionToken, err := c.Cookie("session_token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Session token not found",
+		})
+		return
+	}
+
+	csrfToken, err := c.Cookie("csrf_token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "CSRF token not found",
+		})
+		return
+	}
+
+	// Acessa o banco de dados para verificar o usuário com base no sessionToken e csrfToken
+	db := c.MustGet("db").(*sql.DB)
+
+	var user models.User
+	err = db.QueryRow("SELECT id, username, session_token, csrf_token FROM users WHERE session_token = ? AND csrf_token = ?", sessionToken, csrfToken).Scan(&user.ID, &user.Username, &user.SessionToken, &user.CSRFToken)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Invalid session or CSRF token",
+			})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Error while accessing database",
+			})
+		}
+		return
+	}
+
+	// Retorna uma mensagem de sucesso se a validação for bem-sucedida
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("CSRF validation successful! Welcome, %s", username),
 	})
