@@ -318,9 +318,12 @@ func main() {
 
 	// Gerar o token JWT de um usuário administrador (fake)
 	userAdmin := os.Getenv("REGULAR_USER_ID")
+	if userAdmin == "" {
+		log.Fatal("REGULAR_USER_ID não está definido no ambiente")
+	}
 	tokenAdmin, err := utils.GenerateJWT(userAdmin)
 	if err != nil {
-		fmt.Println("Erro ao gerar token:", err)
+		log.Fatalf("Erro ao gerar token: %v", err)
 	}
 	fmt.Println("Token gerado:", tokenAdmin)
 

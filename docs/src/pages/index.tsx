@@ -147,6 +147,7 @@ export default function Home() {
                 href="https://github.com/victorlirafront/blog-api"
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{color: '#007bff', textDecoration: "none"}}
               >
                 GitHub repository
               </a>{' '}

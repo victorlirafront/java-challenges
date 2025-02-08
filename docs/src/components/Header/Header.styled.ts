@@ -5,6 +5,11 @@ export const StyledHeader = styled.header`
   background: #027d9c;
   color: #fff;
   height: 315px;
+  padding: 0 20px;
+
+  @media screen and (max-width: 510px) {
+    padding: 0;
+  }
 
   .container {
     max-width: 900px;
@@ -20,8 +25,23 @@ export const StyledHeader = styled.header`
     .box {
       margin-bottom: 20px;
       .title {
+        @media screen and (max-width: 800px) {
+          font-size: 30px;
+          line-height: 30px;
+        }
+
         span {
           font-size: 40px;
+
+          @media screen and (max-width: 800px) {
+            font-size: 20px;
+          }
+        }
+      }
+
+      small {
+        @media screen and (max-width: 510px) {
+          font-size: 16px;
         }
       }
     }
@@ -33,6 +53,11 @@ export const StyledHeader = styled.header`
       background-repeat: no-repeat;
       background-position: top center;
       background-size: 150px;
+
+      @media screen and (max-width: 768px) {
+        background-size: 110px;
+        background-position: 44px 0px;
+      }
     }
   }
 `;
