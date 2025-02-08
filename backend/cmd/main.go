@@ -131,26 +131,40 @@ func register(c *gin.Context) {
 }
 
 func login(c *gin.Context) {
+	// Obtém o db do contexto
+	db := c.MustGet("db").(*sql.DB)
+
 	// Obtém os parâmetros do corpo da requisição
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	fmt.Println("username", username)
-	fmt.Println("password", password)
-
-	// Verifica se o usuário existe no mapa
-	user, ok := users[username]
-
-	fmt.Print("users--aqui", users)
-
-	if !ok {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "Invalid username or password",
+	// Verifica se o nome de usuário e a senha têm pelo menos 8 caracteres
+	if len(username) < 8 || len(password) < 8 {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"error": "Username and password must be at least 8 characters long",
 		})
 		return
 	}
 
-	// Verifica se a senha é válida
+	// Recupera o usuário do banco de dados
+	var user models.User
+	result := db.QueryRow("SELECT id, username, hashed_password FROM users WHERE username = ?", username)
+	err := result.Scan(&user.ID, &user.Username, &user.HashedPassword)
+	if err == sql.ErrNoRows {
+		// Se o usuário não for encontrado no banco, retorna erro
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Invalid username or password",
+		})
+		return
+	} else if err != nil {
+		// Se houve algum outro erro ao consultar o banco
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error while accessing database",
+		})
+		return
+	}
+
+	// Verifica se a senha fornecida corresponde ao hash armazenado
 	if !checkPasswordHash(password, user.HashedPassword) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Invalid username or password",
@@ -162,10 +176,14 @@ func login(c *gin.Context) {
 	sessionToken := utils.GenerateToken(32)
 	csrfToken := utils.GenerateToken(32)
 
-	// Armazena os tokens no usuário
-	user.SessionToken = sessionToken
-	user.CSRFToken = csrfToken
-	users[username] = user
+	// Atualizar o usuário com os tokens gerados
+	_, err = db.Exec("UPDATE users SET session_token = ?, csrf_token = ? WHERE id = ?", sessionToken, csrfToken, user.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to update user tokens",
+		})
+		return
+	}
 
 	// Configurações do cookie
 	cookieExpireDuration := 24 * time.Hour // 24 horas
@@ -184,7 +202,7 @@ func login(c *gin.Context) {
 	// Resposta de sucesso de login
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login successful",
-		"user":    username, // Ou qualquer outra informação relevante
+		"user":    user.Username,
 	})
 }
 
