@@ -198,16 +198,30 @@ func logout(c *gin.Context) {
 		return
 	}
 
-	// Limpa os cookies de sessão e CSRF
+	// Obtém o parâmetro "username" do formulário
+	username := c.DefaultPostForm("username", "")
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Username is required",
+		})
+		return
+	}
+
+	// Acessa o banco de dados para atualizar o usuário, limpando os tokens
+	db := c.MustGet("db").(*sql.DB)
+
+	// Atualiza os valores dos tokens para nulos no banco de dados
+	_, err := db.Exec("UPDATE users SET session_token = ?, csrf_token = ? WHERE username = ?", "", "", username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error while logging out",
+		})
+		return
+	}
+
+	// Limpa os cookies de sessão e CSRF no cliente
 	c.SetCookie("session_token", "", -1, "/", "", true, true) // Cookie com HttpOnly
 	c.SetCookie("csrf_token", "", -1, "/", "", true, false)   // Cookie sem HttpOnly
-
-	// Limpa os tokens do usuário no banco de dados
-	username := c.DefaultPostForm("username", "")
-	user, _ := users[username]
-	user.SessionToken = ""
-	user.CSRFToken = ""
-	users[username] = user
 
 	// Retorna resposta de sucesso
 	c.JSON(http.StatusOK, gin.H{
