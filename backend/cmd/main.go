@@ -7,20 +7,15 @@ import (
 	"blog-api/routes"
 	"blog-api/utils"
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var users = map[string]models.Login{}
-var AuthError = errors.New("Unauthorized")
 
 func hasPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
@@ -30,11 +25,6 @@ func hasPassword(password string) (string, error) {
 func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte([]byte(password)))
 	return err == nil
-}
-
-func removePadding(token string) string {
-	token = strings.ReplaceAll(token, "%3D", "=")
-	return token
 }
 
 func Authorize(c *gin.Context) error {
