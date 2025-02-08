@@ -6,8 +6,6 @@ import (
 	"blog-api/models"
 	"blog-api/routes"
 	"blog-api/utils"
-	"crypto/rand"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"log"
@@ -33,27 +31,12 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func generateToken(length int) string {
-	bytes := make([]byte, length)
-
-	if _, err := rand.Read(bytes); err != nil {
-		log.Fatalf("Failed to generate token %v", err)
-	}
-
-	return base64.URLEncoding.EncodeToString(bytes)
-}
-
-// Função para remover o padding do token CSRF
 func removePadding(token string) string {
-	// Substituir o caractere "%3D" (URL encoding) por "="
 	token = strings.ReplaceAll(token, "%3D", "=")
-
-	// Se necessário, decodifique o token para garantir que ele não contenha padding de mais
 	return token
 }
 
 func Authorize(c *gin.Context) error {
-	// Obtém o valor do parâmetro "username" da requisição
 	username := c.DefaultPostForm("username", "") // Para POST, ou c.DefaultQuery("username", "") para GET
 	if username == "" {
 		// Adiciona log para verificar se o username está vazio
@@ -171,8 +154,8 @@ func login(c *gin.Context) {
 	}
 
 	// Gerar o token de sessão e CSRF
-	sessionToken := generateToken(32)
-	csrfToken := generateToken(32)
+	sessionToken := utils.GenerateToken(32)
+	csrfToken := utils.GenerateToken(32)
 
 	// Armazena os tokens no usuário
 	user.SessionToken = sessionToken
