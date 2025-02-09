@@ -2,11 +2,15 @@ package routes
 
 import (
 	"blog-api/models"
+	"blog-api/utils"
 	"database/sql"
 	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-func GetPaginatedPosts(db *sql.DB, page, perPage int) ([]models.Post, error) {
+func getPaginatedPosts(db *sql.DB, page, perPage int) ([]models.Post, error) {
 	offset := (page - 1) * perPage
 
 	query := fmt.Sprintf("SELECT id, title, content, date, category FROM posts LIMIT %d OFFSET %d", perPage, offset)
@@ -32,4 +36,18 @@ func GetPaginatedPosts(db *sql.DB, page, perPage int) ([]models.Post, error) {
 	}
 
 	return posts, nil
+}
+
+func GetPostsHandler(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		page, perPage := utils.GetPaginationParams(c)
+		posts, err := getPaginatedPosts(db, page, perPage)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, posts)
+	}
 }

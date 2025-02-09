@@ -31,7 +31,7 @@ func registerRoutes(router *gin.Engine, db *sql.DB) {
 	router.POST("/protected", routes.Protected)
 
 	// Posts routes
-	router.GET("/posts", getPostsHandler(db))
+	router.GET("/posts", routes.GetPostsHandler(db))
 	router.GET("/posts/:id", getPostByIDHandler(db))
 	router.POST("/posts", middlewares.AuthenticateAdmin, createPostHandler(db))
 	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin, routes.CallUpdatePost)
@@ -39,20 +39,6 @@ func registerRoutes(router *gin.Engine, db *sql.DB) {
 
 	// Search route with authentication
 	router.GET("/search", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), routes.SearchPostsHandler(db))
-}
-
-func getPostsHandler(db *sql.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		page, perPage := utils.GetPaginationParams(c)
-		posts, err := routes.GetPaginatedPosts(db, page, perPage)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": fmt.Sprintf("Erro ao buscar os posts: %v", err),
-			})
-			return
-		}
-		c.JSON(http.StatusOK, posts)
-	}
 }
 
 func getPostByIDHandler(db *sql.DB) gin.HandlerFunc {
