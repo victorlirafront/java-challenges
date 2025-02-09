@@ -155,6 +155,13 @@ export default function Home() {
               Don&apos;t hesitate to fork the project, submit issues, and create pull requests. I
               can&apos;t wait to see what you&apos;ll bring to the project!
             </p>
+
+            <p className="paragraph">
+              This API powers this blog:{' '}
+              <a href="https://victorlirablog.com.br/" target="_blank" rel="noopener noreferrer">
+                https://victorlirablog.com.br
+              </a>
+            </p>
           </BlocksWrapper>
         </div>
       </div>

@@ -26,6 +26,7 @@ export const StyledBlocksWrapper = styled.div`
 
     a {
       color: #007bff;
+      text-decoration: none;
     }
   }
 
