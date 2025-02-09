@@ -1,9 +1,17 @@
+import StyledAsideMenu from '@/components/AsideMenu/AsideMenu';
 import BlocksWrapper from '@/components/BlocksWrapper/BlocksWrapper';
 import Footer from '@/components/Footer/Footer';
 import Header from '@/components/Header/Header';
 import Head from 'next/head';
+import { useState } from 'react';
 
 export default function Home() {
+  const [displayAsideMenu, setDisplayAsideMenu] = useState(false)
+
+  const toggleAsideMenu = function(){
+    setDisplayAsideMenu((prev) => !prev)
+  }
+ 
   return (
     <>
       <Head>
@@ -13,7 +21,8 @@ export default function Home() {
         <link rel="icon" href="https://go.dev/images/favicon-gopher.svg" />
       </Head>
       <div>
-        <Header />
+        <Header onToggleAsideMenu={toggleAsideMenu} />
+        <StyledAsideMenu onToggleAsideMenu={toggleAsideMenu} className={`${displayAsideMenu ? 'active' : ''}`} />
         <div>
           <BlocksWrapper>
             <h1 className="title">What is an API?</h1>

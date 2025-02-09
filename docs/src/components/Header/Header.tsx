@@ -1,7 +1,9 @@
 import { StyledHeader } from "./Header.styled";
 import Image from "next/image";
+import { HeaderProps } from "./Header.types";
 
-function Header(){
+function Header(props: HeaderProps){
+  const { onToggleAsideMenu } = props
 
   const smallText = "(Developed with Golang)"
 
@@ -15,7 +17,7 @@ function Header(){
         <div  className="golang">
         </div>
       </div>
-      <div className="harburguer">
+      <div className="harburguer" onClick={onToggleAsideMenu}>
           <Image src="https://go.dev/images/menu-24px-white.svg" width={45} height={45} alt="hamburguer" />
       </div>
     </StyledHeader>
