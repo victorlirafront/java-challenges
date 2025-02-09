@@ -32,18 +32,12 @@ func registerRoutes(router *gin.Engine, db *sql.DB) {
 	// Posts routes
 	router.GET("/posts", routes.GetPostsHandler(db))
 	router.GET("/posts/:id", routes.GetPostByIDHandler(db))
-	router.POST("/posts", middlewares.AuthenticateAdmin, createPostHandler(db))
+	router.POST("/posts", middlewares.AuthenticateAdmin, routes.CreatePostHandler(db))
 	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin, routes.CallUpdatePost)
 	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
 
 	// Search route with authentication
 	router.GET("/search", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), routes.SearchPostsHandler(db))
-}
-
-func createPostHandler(db *sql.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		routes.CreatePost(db, c)
-	}
 }
 
 func generateAdminToken() (string, error) {

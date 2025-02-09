@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreatePost(db *sql.DB, c *gin.Context) {
+func createPost(db *sql.DB, c *gin.Context) {
 	var newPost models.Post
 
 	if err := c.ShouldBindJSON(&newPost); err != nil {
@@ -37,4 +37,10 @@ func CreatePost(db *sql.DB, c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Post criado com sucesso.",
 	})
+}
+
+func CreatePostHandler(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		createPost(db, c)
+	}
 }
