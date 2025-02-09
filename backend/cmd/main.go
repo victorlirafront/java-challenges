@@ -8,7 +8,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,20 +39,6 @@ func registerRoutes(router *gin.Engine, db *sql.DB) {
 	router.GET("/search", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), routes.SearchPostsHandler(db))
 }
 
-func generateAdminToken() (string, error) {
-	userAdmin := os.Getenv("REGULAR_USER_ID")
-	if userAdmin == "" {
-		return "", fmt.Errorf("REGULAR_USER_ID não está definido no ambiente")
-	}
-
-	tokenAdmin, err := utils.GenerateJWT(userAdmin)
-	if err != nil {
-		return "", fmt.Errorf("erro ao gerar token: %v", err)
-	}
-
-	return tokenAdmin, nil
-}
-
 func main() {
 	db, err := database.CreateDatabaseConnection()
 
@@ -63,7 +48,7 @@ func main() {
 
 	defer db.Close()
 
-	tokenAdmin, err := generateAdminToken()
+	tokenAdmin, err := utils.GenerateAdminToken()
 
 	if err != nil {
 		log.Fatalf("Erro ao gerar token de admin: %v", err)
