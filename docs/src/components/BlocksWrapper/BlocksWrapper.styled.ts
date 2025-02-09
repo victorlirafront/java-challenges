@@ -23,6 +23,10 @@ export const StyledBlocksWrapper = styled.div`
   .paragraph {
     font-size: 18px;
     line-height: 30px;
+
+    a {
+      color: #007bff;
+    }
   }
 
   .api-table {

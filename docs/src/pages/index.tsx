@@ -6,12 +6,12 @@ import Head from 'next/head';
 import { useState } from 'react';
 
 export default function Home() {
-  const [displayAsideMenu, setDisplayAsideMenu] = useState(false)
+  const [displayAsideMenu, setDisplayAsideMenu] = useState(false);
 
-  const toggleAsideMenu = function(){
-    setDisplayAsideMenu((prev) => !prev)
-  }
- 
+  const toggleAsideMenu = function () {
+    setDisplayAsideMenu(prev => !prev);
+  };
+
   return (
     <>
       <Head>
@@ -22,7 +22,10 @@ export default function Home() {
       </Head>
       <div>
         <Header onToggleAsideMenu={toggleAsideMenu} />
-        <StyledAsideMenu onToggleAsideMenu={toggleAsideMenu} className={`${displayAsideMenu ? 'active' : ''}`} />
+        <StyledAsideMenu
+          onToggleAsideMenu={toggleAsideMenu}
+          className={`${displayAsideMenu ? 'active' : ''}`}
+        />
         <div>
           <BlocksWrapper>
             <h1 className="title">What is an API?</h1>
@@ -148,24 +151,36 @@ export default function Home() {
           <BlocksWrapper>
             <h1 className="title">How to Contribute to This Project</h1>
 
-            <p className='paragraph'>
-              This project is open-source ❤️, I we’d love for you to help make
-              it even better. Whether you&apos;re fixing bugs, adding features, or improving
-              documentation, your input is always welcome. You can start by visiting the{' '}
+            <p className="paragraph">
+              This project is open-source ❤️, I we’d love for you to help make it even better.
+              Whether you&apos;re fixing bugs, adding features, or improving documentation, your
+              input is always welcome. You can start by visiting the{' '}
               <a
                 href="https://github.com/victorlirafront/blog-api"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{color: '#007bff', textDecoration: "none"}}
+                style={{ color: '#007bff', textDecoration: 'none' }}
               >
                 GitHub repository
               </a>{' '}
               to explore the code and get involved.
             </p>
 
-            <p className='paragraph'>
-              Don&apos;t hesitate to fork the project, submit issues, and create pull requests. I can&apos;t
-              wait to see what you&apos;ll bring to the project!
+            <p className="paragraph">
+              Don&apos;t hesitate to fork the project, submit issues, and create pull requests. I
+              can&apos;t wait to see what you&apos;ll bring to the project!
+            </p>
+
+            <p className="paragraph">
+              This API is serving the following blog:{' '}
+              <a
+                href="https://www.victorlirablog.com.br/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#007bff', textDecoration: 'none' }}
+              >
+                https://www.victorlirablog.com.br/
+              </a>
             </p>
           </BlocksWrapper>
         </div>
