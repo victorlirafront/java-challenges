@@ -1,16 +1,10 @@
 import StyledAsideMenu from '@/components/AsideMenu/AsideMenu';
 import BlocksWrapper from '@/components/BlocksWrapper/BlocksWrapper';
-import Footer from '@/components/Footer/Footer';
-import Header from '@/components/Header/Header';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useAsideMenu } from '@/context/AsideMenuContext';
 
 export default function Home() {
-  const [displayAsideMenu, setDisplayAsideMenu] = useState(false);
-
-  const toggleAsideMenu = function () {
-    setDisplayAsideMenu(prev => !prev);
-  };
+  const { displayAsideMenu, toggleAsideMenu } = useAsideMenu(); // Consumindo o contexto
 
   return (
     <>
@@ -21,7 +15,6 @@ export default function Home() {
         <link rel="icon" href="https://go.dev/images/favicon-gopher.svg" />
       </Head>
       <div>
-        <Header onToggleAsideMenu={toggleAsideMenu} />
         <StyledAsideMenu
           onToggleAsideMenu={toggleAsideMenu}
           className={`${displayAsideMenu ? 'active' : ''}`}
@@ -170,21 +163,8 @@ export default function Home() {
               Don&apos;t hesitate to fork the project, submit issues, and create pull requests. I
               can&apos;t wait to see what you&apos;ll bring to the project!
             </p>
-
-            <p className="paragraph">
-              This API is serving the following blog:{' '}
-              <a
-                href="https://www.victorlirablog.com.br/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#007bff', textDecoration: 'none' }}
-              >
-                https://www.victorlirablog.com.br/
-              </a>
-            </p>
           </BlocksWrapper>
         </div>
-        <Footer />
       </div>
     </>
   );
