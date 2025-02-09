@@ -1,11 +1,7 @@
-import StyledAsideMenu from '@/components/AsideMenu/AsideMenu';
 import BlocksWrapper from '@/components/BlocksWrapper/BlocksWrapper';
 import Head from 'next/head';
-import { useAsideMenu } from '@/context/AsideMenuContext';
 
 export default function Home() {
-  const { displayAsideMenu, toggleAsideMenu } = useAsideMenu(); // Consumindo o contexto
-
   return (
     <>
       <Head>
@@ -15,10 +11,6 @@ export default function Home() {
         <link rel="icon" href="https://go.dev/images/favicon-gopher.svg" />
       </Head>
       <div>
-        <StyledAsideMenu
-          onToggleAsideMenu={toggleAsideMenu}
-          className={`${displayAsideMenu ? 'active' : ''}`}
-        />
         <div>
           <BlocksWrapper>
             <h1 className="title">What is an API?</h1>
