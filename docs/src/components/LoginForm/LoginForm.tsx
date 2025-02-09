@@ -1,4 +1,4 @@
-import { StyledLoginForm } from "./LoginFomr.styled";
+import { StyledLoginForm } from "./LoginForm.styled";
 
 function LoginForm() {
   return (

@@ -4,7 +4,7 @@ export const StyledLoginForm = styled.div`
   text-align: center;
   display: flex;
   flex: 1;
-  min-height: calc(100vh - 442px);
+  min-height: calc(100vh - 342px);
 
   form {
     width: 300px;
