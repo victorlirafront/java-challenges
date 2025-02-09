@@ -5,6 +5,7 @@ import (
 	"blog-api/middlewares"
 	"blog-api/routes"
 	"blog-api/utils"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,24 +14,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	db, err := database.CreateDatabaseConnection()
-	if err != nil {
-		log.Fatalf("Erro ao conectar ao banco de dados: %v", err)
-	}
-	defer db.Close()
-
+func createRouter(db *sql.DB) *gin.Engine {
 	router := gin.Default()
 	router.Use(middlewares.DatabaseMiddleware(db))
 	router.Use(middlewares.CORSMiddleware())
+	registerRoutes(router, db)
 
+	return router
+}
+
+func registerRoutes(router *gin.Engine, db *sql.DB) {
+	// User authentication and registration
 	router.POST("/register", routes.Register)
 	router.POST("/login", routes.Login)
 	router.POST("/logout", routes.Logout)
 	router.POST("/protected", routes.Protected)
 
-	router.GET("/posts", func(c *gin.Context) {
+	// Posts routes
+	router.GET("/posts", getPostsHandler(db))
+	router.GET("/posts/:id", getPostByIDHandler(db))
+	router.POST("/posts", middlewares.AuthenticateAdmin, createPostHandler(db))
+	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin, routes.CallUpdatePost)
+	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
 
+	// Search route with authentication
+	router.GET("/search", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), routes.SearchPostsHandler(db))
+}
+
+func getPostsHandler(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		page, perPage := utils.GetPaginationParams(c)
 		posts, err := routes.GetPaginatedPosts(db, page, perPage)
 		if err != nil {
@@ -39,19 +51,13 @@ func main() {
 			})
 			return
 		}
-
 		c.JSON(http.StatusOK, posts)
-	})
+	}
+}
 
-	router.GET("/search", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), routes.SearchPostsHandler(db))
-
-	router.POST("/posts", middlewares.AuthenticateAdmin, func(c *gin.Context) {
-		routes.CreatePost(db, c)
-	})
-
-	router.GET("/posts/:id", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), func(c *gin.Context) {
+func getPostByIDHandler(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		postID := c.Param("id")
-
 		post, err := routes.GetPostByID(db, postID)
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -59,30 +65,51 @@ func main() {
 			})
 			return
 		}
-
 		c.JSON(http.StatusOK, post)
-	})
+	}
+}
 
-	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin, func(c *gin.Context) {
-		routes.CallUpdatePost(c)
-	})
+func createPostHandler(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		routes.CreatePost(db, c)
+	}
+}
 
+func generateAdminToken() (string, error) {
 	userAdmin := os.Getenv("REGULAR_USER_ID")
 	if userAdmin == "" {
-		log.Fatal("REGULAR_USER_ID não está definido no ambiente")
+		return "", fmt.Errorf("REGULAR_USER_ID não está definido no ambiente")
 	}
+
 	tokenAdmin, err := utils.GenerateJWT(userAdmin)
 	if err != nil {
-		log.Fatalf("Erro ao gerar token: %v", err)
+		return "", fmt.Errorf("erro ao gerar token: %v", err)
 	}
+
+	return tokenAdmin, nil
+}
+
+func main() {
+	db, err := database.CreateDatabaseConnection()
+
+	if err != nil {
+		log.Fatalf("Erro ao conectar ao banco de dados: %v", err)
+	}
+
+	defer db.Close()
+
+	tokenAdmin, err := generateAdminToken()
+
+	if err != nil {
+		log.Fatalf("Erro ao gerar token de admin: %v", err)
+	}
+
 	fmt.Println("Token gerado:", tokenAdmin)
 
-	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
+	router := createRouter(db)
 
 	fmt.Println("Servidor rodando em http://localhost:8080")
-
-	err = router.Run(":8080")
-	if err != nil {
+	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("Erro ao iniciar o servidor: %v", err)
 	}
 }
