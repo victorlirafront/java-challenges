@@ -1,4 +1,5 @@
 import { StyledHeader } from "./Header.styled";
+import Image from "next/image";
 
 function Header(){
 
@@ -13,6 +14,9 @@ function Header(){
         </div>
         <div  className="golang">
         </div>
+      </div>
+      <div className="harburguer">
+          <Image src="https://go.dev/images/menu-24px-white.svg" width={45} height={45} alt="hamburguer" />
       </div>
     </StyledHeader>
   )

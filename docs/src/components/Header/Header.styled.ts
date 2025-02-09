@@ -60,4 +60,14 @@ export const StyledHeader = styled.header`
       }
     }
   }
+
+  .harburguer {
+    padding: 30px 40px;
+    position: absolute;
+    width: 100%;
+    right: 50%;
+    transform: translateX(50%);
+    top: 0;
+    text-align: end;
+  }
 `;
