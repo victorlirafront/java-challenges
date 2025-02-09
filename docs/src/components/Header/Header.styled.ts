@@ -69,5 +69,6 @@ export const StyledHeader = styled.header`
     transform: translateX(50%);
     top: 0;
     text-align: end;
+    cursor: pointer;
   }
 `;

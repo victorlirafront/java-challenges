@@ -12,6 +12,10 @@ export const StyledAsideMenu = styled.aside`
   text-align: end;
   right: -320px;
   transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1rem solid #e5e9f0;
 
   &.active {
     right: 0;
@@ -21,5 +25,21 @@ export const StyledAsideMenu = styled.aside`
     padding: 10px;
     color: #000;
     cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .menu-options {
+    list-style: none;
+    text-align: center;
+
+    .option {
+      padding: 20px 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 600;
+      color: #555;
+      cursor: pointer;
+    }
   }
 `
