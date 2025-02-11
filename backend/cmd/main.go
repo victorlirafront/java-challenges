@@ -30,7 +30,7 @@ func registerRoutes(router *gin.Engine, db *sql.DB) {
 
 	// Posts routes
 	router.GET("/posts", routes.GetPostsHandler(db))
-	router.GET("/posts/:id", routes.GetPostByIDHandler(db))
+	router.GET("/posts/:id", middlewares.AuthenticateRead, routes.GetPostByIDHandler(db))
 	router.POST("/posts", middlewares.AuthenticateAdmin, routes.CreatePostHandler(db))
 	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin, routes.CallUpdatePost)
 	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
