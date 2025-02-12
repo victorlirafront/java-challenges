@@ -4,7 +4,6 @@ import (
 	"blog-api/database"
 	"blog-api/middlewares"
 	"blog-api/routes"
-	"blog-api/utils"
 	"database/sql"
 	"fmt"
 	"log"
@@ -31,9 +30,9 @@ func registerRoutes(router *gin.Engine, db *sql.DB) {
 	// Posts routes
 	router.GET("/posts", routes.GetPostsHandler(db))
 	router.GET("/posts/:id", middlewares.AuthenticateRead, routes.GetPostByIDHandler(db))
-	router.POST("/posts", middlewares.AuthenticateAdmin, routes.CreatePostHandler(db))
-	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin, routes.CallUpdatePost)
-	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin, routes.DeletePostHandler)
+	router.POST("/posts", middlewares.AuthenticateAdmin(), routes.CreatePostHandler(db))
+	router.PATCH("/posts/:id", middlewares.AuthenticateAdmin(), routes.CallUpdatePost)
+	router.DELETE("/delete/:id", middlewares.AuthenticateAdmin(), routes.DeletePostHandler)
 
 	// Search route with authentication
 	router.GET("/search", middlewares.AuthenticateRead, middlewares.RoleMiddleware("regular", "admin"), routes.SearchPostsHandler(db))
@@ -47,14 +46,6 @@ func main() {
 	}
 
 	defer db.Close()
-
-	tokenAdmin, err := utils.GenerateAdminToken()
-
-	if err != nil {
-		log.Fatalf("Erro ao gerar token de admin: %v", err)
-	}
-
-	fmt.Println("Token gerado:", tokenAdmin)
 
 	router := createRouter(db)
 

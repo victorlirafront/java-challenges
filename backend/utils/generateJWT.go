@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func generateJWT(userID string) (string, error) {
+func generateJWT(userID, role string) (string, error) {
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	if secretKey == "" {
 		return "", fmt.Errorf("chave secreta não configurada")
@@ -16,6 +16,7 @@ func generateJWT(userID string) (string, error) {
 
 	claims := jwt.MapClaims{
 		"user_id": userID,
+		"role":    role,
 		"exp":     time.Now().Add(time.Hour * 24).Unix(),
 	}
 
@@ -29,16 +30,15 @@ func generateJWT(userID string) (string, error) {
 	return tokenString, nil
 }
 
-func GenerateAdminToken() (string, error) {
-	userAdmin := os.Getenv("REGULAR_USER_ID")
-	if userAdmin == "" {
-		return "", fmt.Errorf("REGULAR_USER_ID não está definido no ambiente")
+func GenerateAdminToken(userID, role string) (string, error) {
+	if userID == "" {
+		return "", fmt.Errorf("userID não pode estar vazio")
 	}
 
-	tokenAdmin, err := generateJWT(userAdmin)
+	token, err := generateJWT(userID, role)
 	if err != nil {
 		return "", fmt.Errorf("erro ao gerar token: %v", err)
 	}
 
-	return tokenAdmin, nil
+	return token, nil
 }

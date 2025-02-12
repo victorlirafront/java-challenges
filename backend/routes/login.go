@@ -4,6 +4,7 @@ import (
 	"blog-api/models"
 	"blog-api/utils"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -30,8 +31,8 @@ func Login(c *gin.Context) {
 	}
 
 	var user models.User
-	result := db.QueryRow("SELECT id, username, hashed_password FROM users WHERE username = ?", username)
-	err := result.Scan(&user.ID, &user.Username, &user.HashedPassword)
+	result := db.QueryRow("SELECT id, username, hashed_password, role FROM users WHERE username = ?", username)
+	err := result.Scan(&user.ID, &user.Username, &user.HashedPassword, &user.Role)
 	if err == sql.ErrNoRows {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Invalid username or password",
@@ -62,10 +63,15 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	accessToken, err := utils.GenerateAdminToken(user.Username, user.Role)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("erro ao gerar token: %v", err)})
+		return
+	}
+
 	cookieExpireDuration := 24 * time.Hour
 	cookieSecure := false
 	cookieHttpOnly := true
-
 	expiration := time.Now().Add(cookieExpireDuration)
 
 	c.SetCookie("session_token", sessionToken, int(time.Until(expiration).Seconds()), "/", "", cookieSecure, cookieHttpOnly)
@@ -74,5 +80,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login successful",
 		"user":    user.Username,
+		"token":   accessToken,
+		"role":    user.Role,
 	})
 }

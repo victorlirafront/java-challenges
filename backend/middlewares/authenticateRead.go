@@ -53,19 +53,6 @@ func AuthenticateRead(c *gin.Context) {
 		return
 	}
 
-	adminUserID := os.Getenv("ADMIN_USER_ID")
-	regularUserID := os.Getenv("REGULAR_USER_ID")
-
-	if userID == adminUserID {
-		c.Set("role", "admin")
-	} else if userID == regularUserID {
-		c.Set("role", "regular")
-	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Usuário não autorizado"})
-		c.Abort()
-		return
-	}
-
 	c.Set("userID", userID)
 	c.Next()
 }
