@@ -70,12 +70,29 @@ func Login(c *gin.Context) {
 	}
 
 	cookieExpireDuration := 24 * time.Hour
-	cookieSecure := false
-	cookieHttpOnly := true
+	cookieSecure := false   // Defina como true em produção (HTTPS)
+	cookieHttpOnly := false //verificar se isso prejudica a segurança
 	expiration := time.Now().Add(cookieExpireDuration)
 
-	c.SetCookie("session_token", sessionToken, int(time.Until(expiration).Seconds()), "/", "", cookieSecure, cookieHttpOnly)
-	c.SetCookie("csrf_token", csrfToken, int(time.Until(expiration).Seconds()), "/", "", cookieSecure, false)
+	c.SetCookie(
+		"session_token",
+		sessionToken,
+		int(time.Until(expiration).Seconds()),
+		"/",
+		"",
+		cookieSecure,
+		cookieHttpOnly,
+	)
+
+	c.SetCookie(
+		"csrf_token",
+		csrfToken,
+		int(time.Until(expiration).Seconds()),
+		"/",
+		"",
+		cookieSecure,
+		false,
+	)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login successful",
