@@ -2,8 +2,9 @@ import React from "react";
 
 import { useRouter } from "next/router";
 import { useAuth } from "@/context/Auth";
+import StyledProfileContainer from "./ProfileContainer.styled";
 
-function Dashboard() {
+function ProfileContainer() {
   const { logout } = useAuth();
   const router = useRouter();
 
@@ -13,11 +14,11 @@ function Dashboard() {
   };
 
   return (
-    <div>
+    <StyledProfileContainer>
       <h1>Dashboard</h1>
       <button onClick={handleLogout}>Logout</button>
-    </div>
+    </StyledProfileContainer>
   );
 }
 
-export default Dashboard;
+export default ProfileContainer;
