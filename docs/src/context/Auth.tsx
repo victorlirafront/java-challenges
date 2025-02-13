@@ -1,10 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
+interface AuthData {
+  message: string;
+  role: string;
+  token: string;
+  user: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>; 
-  login: () => void;
+  authData: AuthData | null;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  login: (data: AuthData) => void;
   logout: () => void;
 }
 
@@ -12,32 +20,42 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [authData, setAuthData] = useState<AuthData | null>(null);
 
   useEffect(() => {
     const sessionToken = Cookies.get("session_token");
-    if (sessionToken) {
+    const storedAuthData = Cookies.get("auth_data");
+    
+    if (sessionToken && storedAuthData) {
       setIsAuthenticated(true);
+      setAuthData(JSON.parse(storedAuthData));
     }
   }, []);
 
-  const login = () => {
+  const login = (data: AuthData) => {
     setIsAuthenticated(true);
+    setAuthData(data);
+    Cookies.set("auth_data", JSON.stringify(data));
   };
 
   const logout = () => {
     Cookies.remove("session_token");
+    Cookies.remove("auth_data");
     setIsAuthenticated(false);
+    setAuthData(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, authData, setIsAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
+
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }

@@ -42,7 +42,7 @@ function LoginForm() {
 
       console.log('Login successful:', response.data);
       setError('');
-      login();
+      login(response.data);
       router.push('/profile');
     } catch (error) {
       if (axios.isAxiosError(error)) {
