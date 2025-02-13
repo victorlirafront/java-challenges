@@ -1,13 +1,16 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
 import { StyledLoginForm } from './LoginForm.styled';
+import { useAuth } from '../../context/Auth';
+import { useRouter } from 'next/router';
 import { LoginResponse } from './LoginForm.types';
-import { BLOG_API } from '@/constants/endpoints';
 
 function LoginForm() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const { login } = useAuth();
+  const router = useRouter();
 
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -30,24 +33,20 @@ function LoginForm() {
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await axios.post<LoginResponse>(`${BLOG_API}/login`, formData, {
+      const response = await axios.post<LoginResponse>('http://localhost:8080/login', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        withCredentials: true,
       });
 
       console.log('Login successful:', response.data);
       setError('');
-      if (response.data.token) {
-        localStorage.setItem('accessToken', response.data.token);
-      }
+      login();
+      router.push('/profile');
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        if (error.response) {
-          setError(error.response.data.error || 'Invalid username or password.');
-        } else {
-          setError('An error occurred during login.');
-        }
+        setError(error.response?.data.error || 'Invalid username or password.');
       } else {
         setError('An unexpected error occurred.');
       }
