@@ -1,10 +1,11 @@
-import Dashboard from "@/components/Dashboard/Dashboard";
-import PrivateRoute from "@/components/PrivateRoute/PrivateRoute";
+import ProfileContainer from '@/components/ProfileContainer/ProfileContainer';
+import PrivateRoute from '@/components/PrivateRoute/PrivateRoute';
 
 function Profile() {
+
   return (
     <PrivateRoute>
-      <Dashboard />
+      <ProfileContainer />
     </PrivateRoute>
   );
 }
