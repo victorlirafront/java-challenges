@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const StyledProfileContainer = styled.div`
   min-height: calc(100vh - 315px);
@@ -6,6 +6,16 @@ const StyledProfileContainer = styled.div`
   align-items: center;
   flex-direction: column;
   justify-content: center;
-`
 
-export default StyledProfileContainer
+  .container {
+    border: 15px solid #e5e9f0;
+    max-width: 900px;
+    margin: 0 auto;
+    margin-bottom: 3rem;
+    border-radius: 6px;
+    font-family: sans-serif;
+    padding: 30px;
+  }
+`;
+
+export default StyledProfileContainer;
