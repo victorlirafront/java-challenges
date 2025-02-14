@@ -33,6 +33,7 @@ export const StyledAsideMenu = styled.aside`
   .menu-options {
     list-style: none;
     text-align: center;
+    
 
     .option {
       padding: 20px 0;
@@ -40,6 +41,13 @@ export const StyledAsideMenu = styled.aside`
       font-weight: 600;
       color: #555;
       cursor: pointer;
+      text-decoration: none;
+      color: #027d9c;
+
+      a {
+        text-decoration: none;
+        color: #027d9c;
+      }
     }
   }
 `

@@ -3,9 +3,17 @@ import { StyledAsideMenu } from './AsideMenu.styled';
 import { AsideMenuProps } from './AsideMenu.types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAuth } from '@/context/Auth';
+import router from 'next/router';
 
 function AsideMenu(props: AsideMenuProps) {
   const { className, onToggleAsideMenu } = props;
+  const { isAuthenticated, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <StyledAsideMenu className={className}>
@@ -21,14 +29,26 @@ function AsideMenu(props: AsideMenuProps) {
         <li className="option">
           <Link href="/">Home</Link>
         </li>
-        <li className="option">About</li>
-        <li className="option">Documentation</li>
-        <li className="option">
-          <Link href="/login">Login</Link>
-        </li>
-        <li className="option">
-          <Link href="/signup">SignUp</Link>
-        </li>
+        {isAuthenticated && (
+          <li className="option">
+            <Link href="/profile">Profile</Link>
+          </li>
+        )}
+        {!isAuthenticated && (
+          <li className="option">
+            <Link href="/login">Login</Link>
+          </li>
+        )}
+        {!isAuthenticated && (
+          <li className="option">
+            <Link href="/signup">SignUp</Link>
+          </li>
+        )}
+        {isAuthenticated && (
+          <li className="option" onClick={handleLogout}>
+            Logout
+          </li>
+        )}
       </ul>
     </StyledAsideMenu>
   );
