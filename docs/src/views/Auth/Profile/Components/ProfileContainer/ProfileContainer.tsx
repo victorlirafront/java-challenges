@@ -9,7 +9,7 @@ function ProfileContainer() {
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push('/auth/login');
   };
 
   const handleCopyToken = () => {

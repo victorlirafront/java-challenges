@@ -12,7 +12,7 @@ function AsideMenu(props: AsideMenuProps) {
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push('/auth/login');
   };
 
   return (
@@ -31,12 +31,12 @@ function AsideMenu(props: AsideMenuProps) {
         </li>
         {isAuthenticated && (
           <li className="option">
-            <Link href="/profile">Profile</Link>
+            <Link href="/auth/profile">Profile</Link>
           </li>
         )}
         {!isAuthenticated && (
           <li className="option">
-            <Link href="/login">Login</Link>
+            <Link href="/auth/login">Login</Link>
           </li>
         )}
         {!isAuthenticated && (
