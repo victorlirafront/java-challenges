@@ -41,7 +41,7 @@ function AsideMenu(props: AsideMenuProps) {
         )}
         {!isAuthenticated && (
           <li className="option">
-            <Link href="/signup">SignUp</Link>
+            <Link href="/auth/signup">SignUp</Link>
           </li>
         )}
         {isAuthenticated && (
