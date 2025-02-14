@@ -37,7 +37,7 @@ function SignUpForm() {
 
       console.log('Signup successful:', response.data);
       setError('');
-      router.push('/login');
+      router.push('/auth/login');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data.error || 'An error occurred during sign-up.');

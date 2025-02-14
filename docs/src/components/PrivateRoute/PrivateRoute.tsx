@@ -12,7 +12,7 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     if (!sessionToken) {
       setIsAuthenticated(false);
-      router.replace("/login");
+      router.replace("/auth/login");
     } else {
       setIsAuthenticated(true);
     }
