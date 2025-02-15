@@ -4,12 +4,15 @@ import { StyledLoginForm } from './LoginForm.styled';
 import { useRouter } from 'next/router';
 import { LoginResponse } from './LoginForm.types';
 import { useAuth } from '@/context/Auth';
+import FormModal from '@/components/FormModal/FormModal';
 
 function LoginForm() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [usernameError, setUsernameError] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
+  const [modalActive, setModalActive] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { login } = useAuth();
   const router = useRouter();
 
@@ -39,6 +42,8 @@ function LoginForm() {
 
     if (hasError) return;
 
+    setLoading(true);
+
     try {
       const formData = new FormData();
       formData.append('username', username);
@@ -51,11 +56,13 @@ function LoginForm() {
         withCredentials: true,
       });
 
-      console.log('Login successful:', response.data);
       setUsernameError('');
       setPasswordError('');
       login(response.data);
-      router.push('/auth/profile');
+      setModalActive(true);
+      setTimeout(() => {
+        router.push('/auth/profile');
+      }, 1000);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -72,39 +79,46 @@ function LoginForm() {
         setPasswordError('An unexpected error occurred.');
       }
       console.error('Error during login:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <StyledLoginForm>
-      <form onSubmit={handleSubmit}>
-        <h1>Login</h1>
-        <div className="form-control">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter your username"
-            value={username}
-            onChange={handleUsernameChange}
-          />
-          {usernameError && <p className="error-message">{usernameError}</p>}
-        </div>
-        <div className="form-control">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          {passwordError && <p className="error-message">{passwordError}</p>}
-        </div>
+    <>
+      <FormModal className={modalActive ? 'active' : ''} />
+      <StyledLoginForm>
+        <form onSubmit={handleSubmit}>
+          <h1>Login</h1>
+          <div className="form-control">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter your username"
+              value={username}
+              onChange={handleUsernameChange}
+            />
+            {usernameError && <p className="error-message">{usernameError}</p>}
+          </div>
+          <div className="form-control">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+            {passwordError && <p className="error-message">{passwordError}</p>}
+          </div>
 
-        <button type="submit">Submit</button>
-      </form>
-    </StyledLoginForm>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Carregando...' : 'Submit'}
+          </button>
+        </form>
+      </StyledLoginForm>
+    </>
   );
 }
 
