@@ -1,49 +1,34 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { useAuth } from '@/context/Auth';
 import StyledProfileContainer from './ProfileContainer.styled';
 
 function ProfileContainer() {
-  const { logout, authData } = useAuth();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    logout();
-    router.push('/auth/login');
-  };
+  const { authData } = useAuth();
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyToken = () => {
     if (authData?.token) {
       navigator.clipboard
         .writeText(authData.token)
-        .then(() => alert('Token copiado para a área de transferência!'))
+        .then(() => {
+          setIsCopied(true);
+          setTimeout(() => setIsCopied(false), 2000); // Reseta o texto após 2 segundos
+        })
         .catch(err => console.error('Erro ao copiar token:', err));
     }
   };
 
   return (
     <StyledProfileContainer>
-      <div className='container'>
+      <div className="container">
         <h1>Welcome to your user account!</h1>
-        <button onClick={handleLogout}>Logout</button>
 
         <h1>Access token:</h1>
-        <div>
-          <button onClick={handleCopyToken} style={{ marginTop: '8px', cursor: 'pointer' }}>
-            Copiar Token
+        <div className='token-container'>
+          <button className='btn-copy' onClick={handleCopyToken} style={{ marginTop: '8px', cursor: 'pointer' }}>
+            {isCopied ? 'Token Copiado' : 'Copiar Token'}
           </button>
-          <code
-            style={{
-              wordBreak: 'break-all',
-              whiteSpace: 'pre-wrap',
-              overflowWrap: 'break-word',
-              display: 'block',
-              padding: '8px',
-              backgroundColor: '#f4f4f4',
-              borderRadius: '4px',
-              overflowX: 'auto',
-            }}
-          >
+          <code>
             {authData?.token}
           </code>
         </div>

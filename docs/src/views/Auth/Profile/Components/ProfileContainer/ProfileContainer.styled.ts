@@ -15,6 +15,33 @@ const StyledProfileContainer = styled.div`
     border-radius: 6px;
     font-family: sans-serif;
     padding: 30px;
+
+    .token-container {
+      .btn-copy {
+        background: red;
+        display: block;
+        justify-self: end;
+        background: #027d9c;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+      }
+
+      code {
+        word-break: break-word; 
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        display: block;
+        padding: 8px;
+        border-radius: 4px;
+        overflow-x: auto;
+        background: #1e1e1e;
+        color: #dbdba9;
+        padding: 50px 20px;
+        margin-top: 20px;
+      }
+    }
   }
 `;
 
