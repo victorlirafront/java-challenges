@@ -24,9 +24,10 @@ export const StyledSignUpForm = styled.div`
       flex-direction: column;
       align-items: flex-start;
       width: 100%;
+      position: relative;
 
       &:not(:first-of-type) {
-        margin-top: 30px;
+        margin-top: 40px;
       }
 
       input {
@@ -35,6 +36,13 @@ export const StyledSignUpForm = styled.div`
         border-radius: 5px;
         border: none;
         margin-top: 5px;
+      }
+
+      .error {
+        position: absolute;
+        font-size: 14px;
+        bottom: -20px;
+        color: red;
       }
     }
 

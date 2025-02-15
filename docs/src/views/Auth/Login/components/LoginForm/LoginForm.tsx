@@ -8,25 +8,36 @@ import { useAuth } from '@/context/Auth';
 function LoginForm() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [usernameError, setUsernameError] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
   const { login } = useAuth();
   const router = useRouter();
 
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
+    setUsernameError('');
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    setPasswordError('');
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let hasError = false;
 
-    if (username.length < 8 || password.length < 8) {
-      setError('Username and password must be at least 8 characters long.');
-      return;
+    if (username.length < 8) {
+      setUsernameError('Username must be at least 8 characters long.');
+      hasError = true;
     }
+
+    if (password.length < 8) {
+      setPasswordError('Password must be at least 8 characters long.');
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     try {
       const formData = new FormData();
@@ -41,14 +52,24 @@ function LoginForm() {
       });
 
       console.log('Login successful:', response.data);
-      setError('');
+      setUsernameError('');
+      setPasswordError('');
       login(response.data);
       router.push('/auth/profile');
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        setError(error.response?.data.error || 'Invalid username or password.');
+        if (error.response) {
+          const status = error.response.status;
+          if (status === 401 || status === 403) {
+            setPasswordError('Invalid username or password.');
+          } else {
+            setPasswordError('An error occurred. Please try again later.');
+          }
+        } else {
+          setPasswordError('Network error. Please check your connection.');
+        }
       } else {
-        setError('An unexpected error occurred.');
+        setPasswordError('An unexpected error occurred.');
       }
       console.error('Error during login:', error);
     }
@@ -67,6 +88,7 @@ function LoginForm() {
             value={username}
             onChange={handleUsernameChange}
           />
+          {usernameError && <p className="error-message">{usernameError}</p>}
         </div>
         <div className="form-control">
           <label htmlFor="password">Password</label>
@@ -77,9 +99,8 @@ function LoginForm() {
             value={password}
             onChange={handlePasswordChange}
           />
+          {passwordError && <p className="error-message">{passwordError}</p>}
         </div>
-
-        {error && <p className="error-message">{error}</p>}
 
         <button type="submit">Submit</button>
       </form>

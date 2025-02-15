@@ -7,21 +7,36 @@ function SignUpForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let hasError = false;
 
-    if (username.length < 8 || password.length < 8) {
-      setError('Username and password must be at least 8 characters long.');
-      return;
+    setUsernameError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+
+    if (username.length < 8) {
+      setUsernameError('Username must be at least 8 characters long.');
+      hasError = true;
+    }
+
+    if (password.length < 8) {
+      setPasswordError('Password must be at least 8 characters long.');
+      hasError = true;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
+      setConfirmPasswordError('Passwords do not match.');
+      hasError = true;
     }
+
+    if (hasError) return;
 
     try {
       const formData = new FormData();
@@ -62,6 +77,7 @@ function SignUpForm() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+          {usernameError && <p className="error">{usernameError}</p>}
         </div>
 
         <div className="form-control">
@@ -73,6 +89,7 @@ function SignUpForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {passwordError && <p className="error">{passwordError}</p>}
         </div>
 
         <div className="form-control">
@@ -84,6 +101,7 @@ function SignUpForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+          {confirmPasswordError && <p className="error">{confirmPasswordError}</p>}
         </div>
 
         {error && <p className="error">{error}</p>}

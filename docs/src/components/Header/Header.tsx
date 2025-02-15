@@ -7,7 +7,7 @@ function Header(props: HeaderProps) {
   const smallText = '(Developed with Golang)';
 
   return (
-    <StyledHeader>
+    <StyledHeader data-aos="fade-down" data-aos-delay="100" >
       <div className="container">
         <div className="box">
           <h1 className="title">
