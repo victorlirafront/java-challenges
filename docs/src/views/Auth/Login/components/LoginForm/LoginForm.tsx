@@ -58,11 +58,17 @@ function LoginForm() {
       router.push('/auth/profile');
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data.error || 'Invalid username or password.';
-        setUsernameError(errorMessage.includes('username') ? errorMessage : '');
-        setPasswordError(errorMessage.includes('password') ? errorMessage : '');
+        if (error.response) {
+          const status = error.response.status;
+          if (status === 401 || status === 403) {
+            setPasswordError('Invalid username or password.');
+          } else {
+            setPasswordError('An error occurred. Please try again later.');
+          }
+        } else {
+          setPasswordError('Network error. Please check your connection.');
+        }
       } else {
-        setUsernameError('An unexpected error occurred.');
         setPasswordError('An unexpected error occurred.');
       }
       console.error('Error during login:', error);
