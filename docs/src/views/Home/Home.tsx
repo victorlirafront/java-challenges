@@ -2,6 +2,7 @@ import BlocksWrapper from '@/components/BlocksWrapper/BlocksWrapper';
 import Head from 'next/head';
 
 export default function Home() {
+  
   return (
     <>
       <Head>

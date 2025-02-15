@@ -15,6 +15,7 @@ const StyledProfileContainer = styled.div`
     border-radius: 6px;
     font-family: sans-serif;
     padding: 30px;
+    margin: 100px 0 100px 0;
 
     .token-container {
       .btn-copy {
@@ -29,7 +30,7 @@ const StyledProfileContainer = styled.div`
       }
 
       code {
-        word-break: break-word; 
+        word-break: break-word;
         white-space: pre-wrap;
         overflow-wrap: break-word;
         display: block;
@@ -38,6 +39,23 @@ const StyledProfileContainer = styled.div`
         overflow-x: auto;
         background: #1e1e1e;
         color: #dbdba9;
+        padding: 50px 20px;
+        margin-top: 20px;
+      }
+    }
+
+    .code-example {
+      margin-top: 50px;
+      code {
+        word-break: break-word;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        display: block;
+        padding: 8px;
+        border-radius: 4px;
+        overflow-x: auto;
+        background: #1e1e1e;
+        color:rgb(6, 223, 169);
         padding: 50px 20px;
         margin-top: 20px;
       }
