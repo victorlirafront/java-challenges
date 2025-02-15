@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { StyledSignUpForm } from './SignUpForm.styled';
+import FormModal from '@/components/FormModal/FormModal';
 
 function SignUpForm() {
   const [username, setUsername] = useState('');
@@ -10,7 +11,8 @@ function SignUpForm() {
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const [error, setError] = useState('');
+  const [modalActive, setModalActive] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,77 +40,96 @@ function SignUpForm() {
 
     if (hasError) return;
 
+    setLoading(true);
+
     try {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await axios.post('http://localhost:8080/register', formData, {
+      await axios.post('http://localhost:8080/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
         withCredentials: true,
       });
 
-      console.log('Signup successful:', response.data);
-      setError('');
-      router.push('/auth/login');
+      setPasswordError('');
+      setUsernameError('');
+      setModalActive(true);
+
+      setTimeout(() => {
+        router.push('/auth/login');
+      }, 1000);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        setError(error.response?.data.error || 'An error occurred during sign-up.');
+        if (error.response) {
+          const status = error.response.status;
+          if (status === 401 || status === 403) {
+            setPasswordError('Invalid username or password.');
+          } else {
+            setPasswordError('An error occurred. Please try again later.');
+          }
+        } else {
+          setPasswordError('Network error. Please check your connection.');
+        }
       } else {
-        setError('An unexpected error occurred.');
+        setPasswordError('An unexpected error occurred.');
       }
-      console.error('Error during signup:', error);
+      console.error('Error during login:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <StyledSignUpForm>
-      <form onSubmit={handleSubmit}>
-        <h1>Sign up</h1>
+    <>
+      <FormModal className={modalActive ? 'active' : ''} />
+      <StyledSignUpForm>
+        <form onSubmit={handleSubmit}>
+          <h1>Sign up</h1>
 
-        <div className="form-control">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter a unique username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          {usernameError && <p className="error">{usernameError}</p>}
-        </div>
+          <div className="form-control">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter a unique username"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+            />
+            {usernameError && <p className="error">{usernameError}</p>}
+          </div>
 
-        <div className="form-control">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Create a strong password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {passwordError && <p className="error">{passwordError}</p>}
-        </div>
+          <div className="form-control">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Create a strong password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            {passwordError && <p className="error">{passwordError}</p>}
+          </div>
 
-        <div className="form-control">
-          <label htmlFor="confirm-password">Repeat Password</label>
-          <input
-            type="password"
-            id="confirm-password"
-            placeholder="Confirm your password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          {confirmPasswordError && <p className="error">{confirmPasswordError}</p>}
-        </div>
-
-        {error && <p className="error">{error}</p>}
-
-        <button type="submit">Sign Up</button>
-      </form>
-    </StyledSignUpForm>
+          <div className="form-control">
+            <label htmlFor="confirm-password">Repeat Password</label>
+            <input
+              type="password"
+              id="confirm-password"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+            />
+            {confirmPasswordError && <p className="error">{confirmPasswordError}</p>}
+          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Carregando...' : 'Sign Up'}
+          </button>
+        </form>
+      </StyledSignUpForm>
+    </>
   );
 }
 
