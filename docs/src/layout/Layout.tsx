@@ -9,7 +9,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <>
-      <Header data-aos="fade-up" data-aos-delay="100" data-aos-offset="0" onToggleAsideMenu={toggleAsideMenu} />
+      <Header onToggleAsideMenu={toggleAsideMenu} />
       <main data-aos="fade-down" data-aos-delay="100" data-aos-offset="0">{children}</main>
       <AsideMenu
         onToggleAsideMenu={toggleAsideMenu}
