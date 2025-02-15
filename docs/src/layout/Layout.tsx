@@ -9,13 +9,13 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <>
-      <Header onToggleAsideMenu={toggleAsideMenu} />
-      <main>{children}</main>
+      <Header data-aos="fade-up" data-aos-delay="100" data-aos-offset="0" onToggleAsideMenu={toggleAsideMenu} />
+      <main data-aos="fade-down" data-aos-delay="100" data-aos-offset="0">{children}</main>
       <AsideMenu
         onToggleAsideMenu={toggleAsideMenu}
         className={`${displayAsideMenu ? 'active' : ''}`}
       />
-      <Footer />
+      <Footer data-aos="fade-up" data-aos-delay="100" data-aos-offset="0" />
     </>
   );
 };
