@@ -79,12 +79,14 @@ func Login(c *gin.Context) {
 		Name:     "session_token",
 		Value:    sessionToken,
 		Path:     "/",
-		Domain:   "https://blog-api-two-beta.vercel.app",
+		Domain:   "https://blog-api-two-beta.vercel.app", // Certifique-se de que o domínio está correto
 		Expires:  expiration,
+		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   cookieSecure,
 		HttpOnly: cookieHttpOnly,
-		SameSite: http.SameSiteLaxMode, // SameSite=Lax
+		SameSite: http.SameSiteNoneMode, // SameSite=None para cookies cross-domain
 	}
+
 	http.SetCookie(c.Writer, sessionCookie)
 
 	// Definindo o cookie CSRF com SameSite=None
@@ -92,11 +94,12 @@ func Login(c *gin.Context) {
 		Name:     "csrf_token",
 		Value:    csrfToken,
 		Path:     "/",
-		Domain:   "https://blog-api-two-beta.vercel.app",
+		Domain:   "https://blog-api-two-beta.vercel.app", // Certifique-se de que o domínio está correto
 		Expires:  expiration,
+		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   cookieSecure,
-		HttpOnly: cookieHttpOnly,       // Alterado para true para maior segurança
-		SameSite: http.SameSiteLaxMode, // SameSite=Lax
+		HttpOnly: cookieHttpOnly,        // Alterado para true para maior segurança
+		SameSite: http.SameSiteNoneMode, // SameSite=None para cookies cross-domain
 	}
 	http.SetCookie(c.Writer, csrfCookie)
 
