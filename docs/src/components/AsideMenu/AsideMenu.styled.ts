@@ -38,6 +38,7 @@ export const StyledAsideMenu = styled.aside`
   .menu-options {
     list-style: none;
     text-align: center;
+    width: 100%;
 
     .option {
       padding: 20px 0;
@@ -47,6 +48,7 @@ export const StyledAsideMenu = styled.aside`
       cursor: pointer;
       text-decoration: none;
       color: #027d9c;
+      width: 100%;
 
       a {
         text-decoration: none;

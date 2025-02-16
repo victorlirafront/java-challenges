@@ -2,7 +2,6 @@ import { CLOSE_MENU_HAMBURGUER } from '@/constants/images';
 import { StyledAsideMenu } from './AsideMenu.styled';
 import { AsideMenuProps } from './AsideMenu.types';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useAuth } from '@/context/Auth';
 import router from 'next/router';
 
@@ -16,6 +15,10 @@ function AsideMenu(props: AsideMenuProps) {
     router.push('/auth/login');
   };
 
+  const menuHandler = function (route: string) {
+    router.push(route);
+  };
+
   return (
     <StyledAsideMenu className={className}>
       <Image
@@ -27,22 +30,22 @@ function AsideMenu(props: AsideMenuProps) {
         onClick={onToggleAsideMenu}
       />
       <ul className="menu-options" onClick={onCloseMenu}>
-        <li className="option">
-          <Link href="/">Home</Link>
+        <li className="option" onClick={() => menuHandler('/')}>
+          Home
         </li>
         {isAuthenticated && (
-          <li className="option">
-            <Link href="/auth/profile">Profile</Link>
+          <li className="option" onClick={() => menuHandler('/auth/profile')}>
+            Profile
           </li>
         )}
         {!isAuthenticated && (
-          <li className="option">
-            <Link href="/auth/login">Login</Link>
+          <li className="option" onClick={() => menuHandler('/auth/login')}>
+            Login
           </li>
         )}
         {!isAuthenticated && (
-          <li className="option">
-            <Link href="/auth/signup">SignUp</Link>
+          <li className="option" onClick={() => menuHandler('/auth/signup')}>
+            SignUp
           </li>
         )}
         {isAuthenticated && (
