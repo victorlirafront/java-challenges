@@ -47,7 +47,7 @@ function SignUpForm() {
       formData.append('username', username);
       formData.append('password', password);
 
-      await axios.post('http://localhost:8080/register', formData, {
+      await axios.post('https://blog-api-production-2267.up.railway.app/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

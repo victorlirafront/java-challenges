@@ -49,7 +49,7 @@ func main() {
 
 	router := createRouter(db)
 
-	fmt.Println("Servidor rodando em http://localhost:8080")
+	fmt.Println("Servidor rodando em https://blog-api-production-2267.up.railway.app/")
 	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("Erro ao iniciar o servidor: %v", err)
 	}

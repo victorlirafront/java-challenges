@@ -7,11 +7,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:8080/:path*",
+        destination: "https://blog-api-production-2267.up.railway.app/:path*",
       },
       {
         source: "/login",
-        destination: "http://localhost:8080/login",
+        destination: "https://blog-api-production-2267.up.railway.app/login",
       },
     ];
   },
