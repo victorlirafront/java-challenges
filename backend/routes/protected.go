@@ -17,19 +17,6 @@ func Protected(c *gin.Context) {
 		})
 		return
 	}
-
-	username := c.DefaultPostForm("username", "")
-	if username == "" {
-		username = c.DefaultQuery("username", "")
-	}
-
-	if username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Username is required",
-		})
-		return
-	}
-
 	sessionToken, err := c.Cookie("session_token")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -64,6 +51,6 @@ func Protected(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("CSRF validation successful! Welcome, %s", username),
+		"message": fmt.Sprintf("CSRF validation successful! Welcome, %s", user.Username),
 	})
 }

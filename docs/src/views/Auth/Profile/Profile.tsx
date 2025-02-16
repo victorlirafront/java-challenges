@@ -1,5 +1,5 @@
 
-import PrivateRoute from '@/components/PrivateRoute/PrivateRoute';
+import PrivateRoute from '@/components/ProtectedRoute/ProtectedRoute';
 import ProfileContainer from './Components/ProfileContainer/ProfileContainer';
 
 function Profile() {
