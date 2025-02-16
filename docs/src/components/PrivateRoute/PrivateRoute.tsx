@@ -10,9 +10,11 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   useEffect(() => {
     const sessionToken = Cookies.get("session_token");
 
+    console.log("sessionToken", sessionToken)
+
     if (!sessionToken) {
       setIsAuthenticated(false);
-      router.replace("/auth/login");
+      // router.replace("/auth/login");
     } else {
       setIsAuthenticated(true);
     }
