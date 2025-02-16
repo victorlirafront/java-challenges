@@ -20,7 +20,7 @@ function ProfileContainer() {
 
   const codeSnippet = `const fetchPost = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/posts/1', {
+      const response = await axios.post('http://localhost:8080/posts/1', {
         headers: {
           Authorization:
             'Bearer ${authData?.token}',
