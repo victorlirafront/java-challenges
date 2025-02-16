@@ -39,9 +39,9 @@ function ProfileContainer() {
   return (
     <StyledProfileContainer>
       <div className="container">
-        <h1>Welcome to your user account!</h1>
+        <h1 className='title'>Welcome to your user account!</h1>
 
-        <h1>Access token:</h1>
+        <h1 className='title'>Access token:</h1>
         <div className="token-container">
           <button
             className="btn-copy"
@@ -54,7 +54,7 @@ function ProfileContainer() {
         </div>
 
         <div className='code-example' style={{width: '100%', overflow: 'auto'}}>
-          <h1>Implementation Example:</h1>
+          <h1 className='title'>Implementation Example:</h1>
           <pre>
             <code>{codeSnippet}</code>
           </pre>

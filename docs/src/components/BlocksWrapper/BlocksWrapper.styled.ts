@@ -20,7 +20,7 @@ export const StyledBlocksWrapper = styled.div`
     }
   }
 
-  .title {
+  h1 {
     font-size: 30px;
     line-height: 4rem;
     color: #2e3440;

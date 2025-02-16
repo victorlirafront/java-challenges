@@ -17,6 +17,22 @@ const StyledProfileContainer = styled.div`
     padding: 30px;
     margin: 100px 0 100px 0;
 
+    @media screen and (max-width: 768px) {
+      margin: 30px 0 30px 0;
+      padding: 10px;
+    }
+
+    .title {
+      font-size: 30px;
+      line-height: 4rem;
+      color: #2e3440;
+
+      @media screen and (max-width: 768px) {
+        font-size: 22px;
+        line-height: 23px;
+      }
+    }
+
     .token-container {
       .btn-copy {
         background: red;
@@ -55,7 +71,7 @@ const StyledProfileContainer = styled.div`
         border-radius: 4px;
         overflow-x: auto;
         background: #1e1e1e;
-        color:rgb(6, 223, 169);
+        color: rgb(6, 223, 169);
         padding: 50px 20px;
         margin-top: 20px;
       }
