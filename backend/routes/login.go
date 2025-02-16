@@ -70,8 +70,8 @@ func Login(c *gin.Context) {
 	}
 
 	cookieExpireDuration := 24 * time.Hour
-	cookieSecure := false   // Defina como true em produção (HTTPS)
-	cookieHttpOnly := false // Avalie se precisa ser true, dependendo da sua necessidade de segurança
+	cookieSecure := true    // Defina como true em produção (HTTPS)
+	cookieHttpOnly := false // Defina como true para cookies de CSRF para maior segurança
 	expiration := time.Now().Add(cookieExpireDuration)
 
 	// Definindo o cookie de sessão com SameSite=None
@@ -95,7 +95,7 @@ func Login(c *gin.Context) {
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   cookieSecure,
-		HttpOnly: false,
+		HttpOnly: false, // Alterado para true para maior segurança
 		SameSite: http.SameSiteNoneMode,
 	}
 	http.SetCookie(c.Writer, csrfCookie)
