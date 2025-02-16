@@ -49,7 +49,7 @@ function LoginForm() {
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await axios.post<LoginResponse>('https://blog-api-production-2267.up.railway.app/login', formData, {
+      const response = await axios.post<LoginResponse>('http://localhost:8080/login', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

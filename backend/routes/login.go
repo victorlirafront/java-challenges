@@ -83,7 +83,6 @@ func Login(c *gin.Context) {
 		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   cookieSecure,
 		HttpOnly: cookieHttpOnly,
-		SameSite: http.SameSiteNoneMode, // Permite o envio em contextos cross-site
 	}
 	http.SetCookie(c.Writer, sessionCookie)
 
@@ -96,7 +95,6 @@ func Login(c *gin.Context) {
 		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   cookieSecure,
 		HttpOnly: false, // Alterado para true para maior segurança
-		SameSite: http.SameSiteNoneMode,
 	}
 	http.SetCookie(c.Writer, csrfCookie)
 
