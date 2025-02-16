@@ -20,6 +20,12 @@ export const StyledBlocksWrapper = styled.div`
     }
   }
 
+  .api-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+  }
+
   h1 {
     font-size: 30px;
     line-height: 4rem;
@@ -42,6 +48,7 @@ export const StyledBlocksWrapper = styled.div`
      margin-top: 10px;
      margin-bottom: 10px;
     }
+    
 
     a {
       color: #007bff;

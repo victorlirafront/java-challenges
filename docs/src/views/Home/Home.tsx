@@ -24,6 +24,18 @@ export default function Home() {
           </BlocksWrapper>
 
           <BlocksWrapper>
+            <h1 className="title">Access the Blog API</h1>
+            <p className="paragraph">You can access the API using the following base URL:</p>
+            <div style={{margin: '10px 0'}}>
+              <code className="api-link">https://blog-api-production-2267.up.railway.app/</code>
+            </div>
+            <p className="paragraph">
+              To interact with the blog API, append the specific endpoints listed above to the base
+              URL.
+            </p>
+          </BlocksWrapper>
+
+          <BlocksWrapper>
             <h1 className="title">How can I get my access token?</h1>
             <p className="paragraph">
               First, create an account by clicking on the menu in the top left corner and log in.
