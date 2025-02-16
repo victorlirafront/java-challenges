@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 interface AuthData {
   message: string;
@@ -23,22 +24,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authData, setAuthData] = useState<AuthData | null>(null);
 
   useEffect(() => {
-    const storedAuthData = Cookies.get("auth_data");
-    
+
+    const storedAuthData = Cookies.get('auth_data');
+
     if (storedAuthData) {
       setIsAuthenticated(true);
       setAuthData(JSON.parse(storedAuthData));
     }
+    
   }, []);
 
   const login = (data: AuthData) => {
     setIsAuthenticated(true);
     setAuthData(data);
-    Cookies.set("auth_data", JSON.stringify(data));
+    Cookies.set('auth_data', JSON.stringify(data));
   };
 
-  const logout = () => {
-    Cookies.remove("auth_data");
+  const logout = async () => {
+
+    const userString = Cookies.get('auth_data');
+
+    if (userString) {
+      try {
+        const user = JSON.parse(userString);
+
+        const formData = new FormData();
+        formData.append('username', user.user);
+
+        const response = await axios.post('http://localhost:8080/logout', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: true,
+        });
+
+        console.log('Logout realizado com sucesso:', response.data);
+      } catch (error) {
+        console.error('Erro ao parsear o cookie ou ao fazer o logout:', error);
+      }
+    } else {
+      console.warn("Nenhum cookie 'auth_data' encontrado.");
+    }
+
+    Cookies.remove('auth_data');
+
     setIsAuthenticated(false);
     setAuthData(null);
   };
@@ -51,11 +80,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 export const useAuth = () => {
-
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
