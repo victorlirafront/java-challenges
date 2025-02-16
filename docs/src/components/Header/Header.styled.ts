@@ -8,7 +8,7 @@ export const StyledHeader = styled.header`
   padding: 0 20px;
 
   @media screen and (max-width: 510px) {
-    padding: 0;
+    padding: 0 20px;
   }
 
   .container {
@@ -21,6 +21,12 @@ export const StyledHeader = styled.header`
     justify-content: space-between;
     align-items: flex-end;
     text-align: center;
+
+    @media screen and (max-width: 500px) {
+      width: 300px;
+      margin: 0;
+      text-align: start;
+    }
 
     .box {
       margin-bottom: 20px;
@@ -58,17 +64,23 @@ export const StyledHeader = styled.header`
         background-size: 110px;
         background-position: 44px 0px;
       }
+
+      @media screen and (max-width: 500px) {
+        position: absolute;
+        right: 0px;
+      }
     }
   }
 
   .harburguer {
     padding: 30px 40px;
     position: absolute;
-    width: 100%;
-    right: 50%;
-    transform: translateX(50%);
     top: 0;
     text-align: end;
     cursor: pointer;
+
+    @media screen and (max-width: 510px) {
+      padding: 30px 0px;
+    }
   }
 `;

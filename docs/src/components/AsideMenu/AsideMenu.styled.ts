@@ -1,5 +1,4 @@
-import styled from "styled-components";
-
+import styled from 'styled-components';
 
 export const StyledAsideMenu = styled.aside`
   background: #edeff3;
@@ -10,17 +9,23 @@ export const StyledAsideMenu = styled.aside`
   height: 100vh;
   padding: 20px;
   text-align: end;
-  right: -320px;
+  left: -320px;
   transition: 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-left: 1rem solid #e5e9f0;
+  border-right: 1rem solid #e5e9f0;
+
+  @media screen and (max-width: 500px) {
+    width: 260px;
+    margin: 0;
+    text-align: start;
+  }
 
   &.active {
-    right: 0;
+    left: 0;
   }
-  
+
   .close-menu {
     padding: 10px;
     color: #000;
@@ -33,7 +38,6 @@ export const StyledAsideMenu = styled.aside`
   .menu-options {
     list-style: none;
     text-align: center;
-    
 
     .option {
       padding: 20px 0;
@@ -50,4 +54,4 @@ export const StyledAsideMenu = styled.aside`
       }
     }
   }
-`
+`;

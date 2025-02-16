@@ -26,7 +26,7 @@ export default function Home() {
           <BlocksWrapper>
             <h1 className="title">How can I get my access token?</h1>
             <p className="paragraph">
-              First, create an account by clicking on the menu in the top right corner and log in.
+              First, create an account by clicking on the menu in the top left corner and log in.
               Once you&apos;re logged in, you&apos;ll be able to access your profile and retrieve
               your access token.
             </p>

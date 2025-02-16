@@ -9,20 +9,39 @@ export const StyledBlocksWrapper = styled.div`
   font-family: sans-serif;
   padding: 30px;
 
+  @media screen and (max-width: 600px) {
+    padding: 10px;
+  }
+
   &:first-child {
     margin-top: 100px;
+    @media screen and (max-width: 600px) {
+      margin-top: 30px;
+    }
   }
 
   .title {
     font-size: 30px;
     line-height: 4rem;
     color: #2e3440;
+
+    @media screen and (max-width: 768px) {
+     font-size: 22px;
+     line-height: 23px;
+    }
   }
 
   .paragraph {
     font-size: 18px;
     line-height: 30px;
     color: #555;
+
+    @media screen and (max-width: 768px) {
+     font-size: 14px;
+     line-height: 24px;
+     margin-top: 10px;
+     margin-bottom: 10px;
+    }
 
     a {
       color: #007bff;
@@ -75,6 +94,11 @@ export const StyledBlocksWrapper = styled.div`
             font-family: monospace;
             color: #555;
             line-height: 24px;
+
+            @media screen and (max-width: 600px) {
+              display: flex;
+              flex-direction: column;
+            }
           }
         }
       }
