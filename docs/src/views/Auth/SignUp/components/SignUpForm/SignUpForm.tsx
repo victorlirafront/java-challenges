@@ -125,7 +125,7 @@ function SignUpForm() {
             {confirmPasswordError && <p className="error">{confirmPasswordError}</p>}
           </div>
           <button type="submit" disabled={loading}>
-            {loading ? 'Carregando...' : 'Sign Up'}
+            {loading ? 'Loading...' : 'Sign Up'}
           </button>
         </form>
       </StyledSignUpForm>

@@ -114,7 +114,7 @@ function LoginForm() {
           </div>
 
           <button type="submit" disabled={loading}>
-            {loading ? 'Carregando...' : 'Submit'}
+            {loading ? 'Loading...' : 'Submit'}
           </button>
         </form>
       </StyledLoginForm>
