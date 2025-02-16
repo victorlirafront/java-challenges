@@ -79,8 +79,8 @@ func Login(c *gin.Context) {
 		Name:     "session_token",
 		Value:    sessionToken,
 		Path:     "/",
+		Domain:   "https://blog-api-two-beta.vercel.app",
 		Expires:  expiration,
-		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   cookieSecure,
 		HttpOnly: cookieHttpOnly,
 	}
@@ -91,8 +91,8 @@ func Login(c *gin.Context) {
 		Name:     "csrf_token",
 		Value:    csrfToken,
 		Path:     "/",
+		Domain:   "https://blog-api-two-beta.vercel.app",
 		Expires:  expiration,
-		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   cookieSecure,
 		HttpOnly: false, // Alterado para true para maior segurança
 	}
