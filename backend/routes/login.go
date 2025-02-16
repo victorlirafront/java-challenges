@@ -83,6 +83,7 @@ func Login(c *gin.Context) {
 		Expires:  expiration,
 		Secure:   cookieSecure,
 		HttpOnly: cookieHttpOnly,
+		SameSite: http.SameSiteLaxMode, // SameSite=Lax
 	}
 	http.SetCookie(c.Writer, sessionCookie)
 
@@ -94,7 +95,8 @@ func Login(c *gin.Context) {
 		Domain:   "https://blog-api-two-beta.vercel.app",
 		Expires:  expiration,
 		Secure:   cookieSecure,
-		HttpOnly: cookieHttpOnly, // Alterado para true para maior segurança
+		HttpOnly: cookieHttpOnly,       // Alterado para true para maior segurança
+		SameSite: http.SameSiteLaxMode, // SameSite=Lax
 	}
 	http.SetCookie(c.Writer, csrfCookie)
 
