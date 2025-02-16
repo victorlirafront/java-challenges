@@ -23,10 +23,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authData, setAuthData] = useState<AuthData | null>(null);
 
   useEffect(() => {
-    const sessionToken = Cookies.get("session_token");
     const storedAuthData = Cookies.get("auth_data");
     
-    if (sessionToken && storedAuthData) {
+    if (storedAuthData) {
       setIsAuthenticated(true);
       setAuthData(JSON.parse(storedAuthData));
     }
@@ -39,7 +38,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    Cookies.remove("session_token");
     Cookies.remove("auth_data");
     setIsAuthenticated(false);
     setAuthData(null);
