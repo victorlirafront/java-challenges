@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useAuth } from '@/context/Auth';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
@@ -12,28 +12,25 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   useEffect(() => {
     const fetchProtectedRoute = async () => {
       try {
-        try {
-          const response = await axios.post(
-            'http://localhost:8080/protected',
-            {},
-            {
-              withCredentials: true,
-            },
-          );
+        const response = await axios.post(
+          'http://localhost:8080/protected',
+          {},
+          {
+            withCredentials: true,
+          },
+        );
 
-          console.log('✅ Acesso autorizado:', response.data);
-          setIsAuthenticated(true);
-        } catch (err) {
+        console.log('✅ Acesso autorizado:', response.data);
+        setIsAuthenticated(true);
+      } catch (err) {
+        if (err instanceof AxiosError) {
           console.log(err);
-          router.replace('/auth/login');
-        }
-      } catch (error: any) {
-        console.error('🔴 Erro ao acessar rota protegida:', error);
-
-        if (error.response?.status === 401) {
-          console.warn('🔴 Usuário não autenticado. Redirecionando para login...');
-          setIsAuthenticated(false);
-          router.replace('/auth/login');
+          if (err.response?.status === 401) {
+            setIsAuthenticated(false);
+            router.replace('/auth/login');
+          }
+        } else {
+          console.error('Erro desconhecido', err);
         }
       } finally {
         setLoading(false);
