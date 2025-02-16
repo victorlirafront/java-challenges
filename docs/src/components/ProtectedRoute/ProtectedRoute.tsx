@@ -22,7 +22,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
           {},
           {
             withCredentials: true,
-          },
+          }
         );
 
         console.log('✅ Acesso autorizado:', response.data);
