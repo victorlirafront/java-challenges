@@ -70,8 +70,8 @@ func Login(c *gin.Context) {
 	}
 
 	cookieExpireDuration := 24 * time.Hour
-	cookieSecure := false  // Defina como true em produção (HTTPS)
-	cookieHttpOnly := true // Defina como true para cookies de CSRF para maior segurança
+	// cookieSecure := false // Defina como true em produção (HTTPS)
+	// cookieHttpOnly := true // Defina como true para cookies de CSRF para maior segurança
 	expiration := time.Now().Add(cookieExpireDuration)
 
 	// Definindo o cookie de sessão com SameSite=None
@@ -82,8 +82,8 @@ func Login(c *gin.Context) {
 		Domain:   "https://blog-api-two-beta.vercel.app", // Certifique-se de que o domínio está correto
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
-		Secure:   cookieSecure,
-		HttpOnly: cookieHttpOnly,
+		Secure:   false,
+		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode, // SameSite=None para cookies cross-domain
 	}
 
@@ -97,8 +97,8 @@ func Login(c *gin.Context) {
 		Domain:   "https://blog-api-two-beta.vercel.app", // Certifique-se de que o domínio está correto
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
-		Secure:   cookieSecure,
-		HttpOnly: cookieHttpOnly,        // Alterado para true para maior segurança
+		Secure:   false,
+		HttpOnly: false,                 // Alterado para true para maior segurança
 		SameSite: http.SameSiteNoneMode, // SameSite=None para cookies cross-domain
 	}
 	http.SetCookie(c.Writer, csrfCookie)
