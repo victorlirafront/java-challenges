@@ -74,18 +74,19 @@ func Login(c *gin.Context) {
 	// cookieHttpOnly := true // Defina como true para cookies de CSRF para maior segurança
 	expiration := time.Now().Add(cookieExpireDuration)
 
-	// Definindo o cookie de sessão com SameSite=None
 	sessionCookie := &http.Cookie{
 		Name:     "session_token",
 		Value:    sessionToken,
 		Path:     "/",
-		Domain:   "https://blog-api-two-beta.vercel.app", // Certifique-se de que o domínio está correto
+		Domain:   "blog-api-two-beta.vercel.app", // Apenas o nome do domínio
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
-		Secure:   false,
-		HttpOnly: false,
+		Secure:   true,                  // Defina como true em produção (HTTPS)
+		HttpOnly: true,                  // Defina como true para maior segurança
 		SameSite: http.SameSiteNoneMode, // SameSite=None para cookies cross-domain
 	}
+
+	http.SetCookie(c.Writer, sessionCookie)
 
 	http.SetCookie(c.Writer, sessionCookie)
 
@@ -94,11 +95,11 @@ func Login(c *gin.Context) {
 		Name:     "csrf_token",
 		Value:    csrfToken,
 		Path:     "/",
-		Domain:   "https://blog-api-two-beta.vercel.app", // Certifique-se de que o domínio está correto
+		Domain:   "blog-api-two-beta.vercel.app", // Apenas o nome do domínio
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
-		Secure:   false,
-		HttpOnly: false,                 // Alterado para true para maior segurança
+		Secure:   true,                  // Defina como true em produção (HTTPS)
+		HttpOnly: true,                  // Defina como true para maior segurança
 		SameSite: http.SameSiteNoneMode, // SameSite=None para cookies cross-domain
 	}
 	http.SetCookie(c.Writer, csrfCookie)
