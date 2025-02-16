@@ -75,10 +75,10 @@ func Login(c *gin.Context) {
 	expiration := time.Now().Add(cookieExpireDuration)
 
 	sessionCookie := &http.Cookie{
-		Name:     "session_token",
-		Value:    sessionToken,
-		Path:     "/",
-		Domain:   "blog-api-two-beta.vercel.app", // Apenas o nome do domínio
+		Name:  "session_token",
+		Value: sessionToken,
+		Path:  "/",
+		// Domain:   "blog-api-two-beta.vercel.app", // Apenas o nome do domínio
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   true,                  // Defina como true em produção (HTTPS)
@@ -92,10 +92,10 @@ func Login(c *gin.Context) {
 
 	// Definindo o cookie CSRF com SameSite=None
 	csrfCookie := &http.Cookie{
-		Name:     "csrf_token",
-		Value:    csrfToken,
-		Path:     "/",
-		Domain:   "blog-api-two-beta.vercel.app", // Apenas o nome do domínio
+		Name:  "csrf_token",
+		Value: csrfToken,
+		Path:  "/",
+		// Domain:   "blog-api-two-beta.vercel.app", // Apenas o nome do domínio
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   true,                  // Defina como true em produção (HTTPS)
