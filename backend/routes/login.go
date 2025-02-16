@@ -94,7 +94,7 @@ func Login(c *gin.Context) {
 		Domain:   "https://blog-api-two-beta.vercel.app",
 		Expires:  expiration,
 		Secure:   cookieSecure,
-		HttpOnly: false, // Alterado para true para maior segurança
+		HttpOnly: cookieHttpOnly, // Alterado para true para maior segurança
 	}
 	http.SetCookie(c.Writer, csrfCookie)
 
