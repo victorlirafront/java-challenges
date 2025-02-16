@@ -5,7 +5,7 @@ import Footer from '@/components/Footer/Footer';
 import AsideMenu from '@/components/AsideMenu/AsideMenu';
 
 const Layout = ({ children }: LayoutProps) => {
-  const { displayAsideMenu, toggleAsideMenu } = useAsideMenu();
+  const { displayAsideMenu, toggleAsideMenu, closeMenu } = useAsideMenu();
 
   return (
     <>
@@ -13,6 +13,7 @@ const Layout = ({ children }: LayoutProps) => {
       <main data-aos="fade-down" data-aos-delay="100" data-aos-offset="0">{children}</main>
       <AsideMenu
         onToggleAsideMenu={toggleAsideMenu}
+         onCloseMenu={closeMenu}
         className={`${displayAsideMenu ? 'active' : ''}`}
       />
       <Footer data-aos="fade-up" data-aos-delay="100" data-aos-offset="0" />

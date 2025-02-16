@@ -7,10 +7,11 @@ import { useAuth } from '@/context/Auth';
 import router from 'next/router';
 
 function AsideMenu(props: AsideMenuProps) {
-  const { className, onToggleAsideMenu } = props;
+  const { className, onToggleAsideMenu, onCloseMenu } = props;
   const { isAuthenticated, logout } = useAuth();
 
   const handleLogout = () => {
+    onCloseMenu();
     logout();
     router.push('/auth/login');
   };
@@ -25,7 +26,7 @@ function AsideMenu(props: AsideMenuProps) {
         className="close-menu"
         onClick={onToggleAsideMenu}
       />
-      <ul className="menu-options">
+      <ul className="menu-options" onClick={onCloseMenu}>
         <li className="option">
           <Link href="/">Home</Link>
         </li>
