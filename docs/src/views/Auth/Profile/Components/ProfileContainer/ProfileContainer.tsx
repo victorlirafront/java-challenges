@@ -36,6 +36,10 @@ function ProfileContainer() {
   
   fetchPost();`;
 
+
+  const curlSnippet = `curl --location 'http://localhost:8080/posts/1' \\
+  --header 'Authorization: Bearer ${authData?.token}'`;
+
   return (
     <StyledProfileContainer>
       <div className="container">
@@ -57,6 +61,13 @@ function ProfileContainer() {
           <h1 className='title'>Implementation Example:</h1>
           <pre>
             <code>{codeSnippet}</code>
+          </pre>
+        </div>
+
+        <div className='code-example' style={{width: '100%', overflow: 'auto'}}>
+          <h1 className='title'>Curl Implementation Example</h1>
+          <pre>
+            <code>{curlSnippet}</code>
           </pre>
         </div>
       </div>
