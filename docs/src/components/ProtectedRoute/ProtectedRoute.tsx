@@ -9,11 +9,16 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
 
+  const API_BASE_URL =
+    process.env.NODE_ENV === 'development'
+      ? process.env.NEXT_PUBLIC_BLOG_API_DEVELOPMENT
+      : process.env.NEXT_PUBLIC_BLOG_API_PRODUCTION;
+
   useEffect(() => {
     const fetchProtectedRoute = async () => {
       try {
         const response = await axios.post(
-          'http://localhost:8080/protected',
+          `${API_BASE_URL}/protected`,
           {},
           {
             withCredentials: true,

@@ -23,6 +23,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authData, setAuthData] = useState<AuthData | null>(null);
 
+  const API_BASE_URL =
+  process.env.NODE_ENV === 'development'
+    ? process.env.NEXT_PUBLIC_BLOG_API_DEVELOPMENT
+    : process.env.NEXT_PUBLIC_BLOG_API_PRODUCTION;
+
   useEffect(() => {
 
     const storedAuthData = Cookies.get('auth_data');
@@ -51,14 +56,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const formData = new FormData();
         formData.append('username', user.user);
 
-        const response = await axios.post('http://localhost:8080/logout', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: true,
-        });
-
-        console.log('Logout realizado com sucesso:', response.data);
+        try{
+          const response = await axios.post(`${API_BASE_URL}/logout`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true,
+          });
+  
+          console.log('Logout realizado com sucesso:', response.data);
+        }catch(err){
+          console.log(err)
+        }
       } catch (error) {
         console.error('Erro ao parsear o cookie ou ao fazer o logout:', error);
       }

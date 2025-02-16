@@ -47,7 +47,12 @@ function SignUpForm() {
       formData.append('username', username);
       formData.append('password', password);
 
-      await axios.post('http://localhost:8080/register', formData, {
+      const API_BASE_URL =
+      process.env.NODE_ENV === 'development'
+        ? process.env.NEXT_PUBLIC_BLOG_API_DEVELOPMENT
+        : process.env.NEXT_PUBLIC_BLOG_API_PRODUCTION;
+
+      await axios.post(`${API_BASE_URL}/register`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -49,7 +49,12 @@ function LoginForm() {
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await axios.post<LoginResponse>('http://localhost:8080/login', formData, {
+      const API_BASE_URL =
+      process.env.NODE_ENV === 'development'
+        ? process.env.NEXT_PUBLIC_BLOG_API_DEVELOPMENT
+        : process.env.NEXT_PUBLIC_BLOG_API_PRODUCTION;
+
+      const response = await axios.post<LoginResponse>(`${API_BASE_URL}/login`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -1,5 +1,13 @@
 import type { NextConfig } from "next";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_BLOG_API_DEVELOPMENT ||
+  process.env.NEXT_PUBLIC_BLOG_API_PRODUCTION;
+
+if (!API_BASE_URL) {
+  throw new Error("API_BASE_URL está indefinido. Verifique suas variáveis de ambiente.");
+}
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
@@ -11,11 +19,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:8080/:path*",
-      },
-      {
-        source: "/login",
-        destination: "http://localhost:8080/login",
+        destination: `${API_BASE_URL}/:path*`,
       },
     ];
   },
