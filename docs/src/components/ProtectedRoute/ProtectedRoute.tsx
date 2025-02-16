@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '@/context/Auth';
 import { useRouter } from 'next/router';
+import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -11,15 +12,19 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   useEffect(() => {
     const fetchProtectedRoute = async () => {
       try {
-        try{
-          const response = await axios.post('http://localhost:8080/protected', {}, { 
-            withCredentials: true,
-          });
+        try {
+          const response = await axios.post(
+            'http://localhost:8080/protected',
+            {},
+            {
+              withCredentials: true,
+            },
+          );
 
           console.log('✅ Acesso autorizado:', response.data);
           setIsAuthenticated(true);
-        }catch(err){
-          console.log(err)
+        } catch (err) {
+          console.log(err);
           router.replace('/auth/login');
         }
       } catch (error: any) {
@@ -39,7 +44,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   }, [setIsAuthenticated, router]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   return isAuthenticated ? <>{children}</> : null;
