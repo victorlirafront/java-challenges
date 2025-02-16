@@ -83,7 +83,7 @@ func Login(c *gin.Context) {
 		Expires:  expiration,
 		MaxAge:   int(time.Until(expiration).Seconds()),
 		Secure:   false,
-		HttpOnly: true,
+		HttpOnly: false,
 		SameSite: http.SameSiteNoneMode, // SameSite=None para cookies cross-domain
 	}
 
