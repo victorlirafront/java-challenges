@@ -37,7 +37,7 @@ function ProfileContainer() {
   fetchPost();`;
 
 
-  const curlSnippet = `curl --location 'http://localhost:8080/posts/1' \\
+  const curlSnippet = `curl --location 'https://blog-api-production-2267.up.railway.app/posts/1' \\
   --header 'Authorization: Bearer ${authData?.token}'`;
 
   return (
