@@ -36,16 +36,15 @@ function ProfileContainer() {
   
   fetchPost();`;
 
-
   const curlSnippet = `curl --location 'https://blog-api-production-2267.up.railway.app/posts/1' \\
   --header 'Authorization: Bearer ${authData?.token}'`;
 
   return (
     <StyledProfileContainer>
       <div className="container">
-        <h1 className='title'>Welcome to your user account!</h1>
+        <h1 className="title">Welcome to your user account!</h1>
 
-        <h1 className='title'>Access token:</h1>
+        <h1 className="title">Access token:</h1>
         <div className="token-container">
           <button
             className="btn-copy"
@@ -57,17 +56,17 @@ function ProfileContainer() {
           <code>{authData?.token}</code>
         </div>
 
-        <div className='code-example' style={{width: '100%', overflow: 'auto'}}>
-          <h1 className='title'>Implementation Example:</h1>
+        <div className="code-example" style={{ width: '100%', overflow: 'auto' }}>
+          <h1 className="title">Curl Request Example</h1>
           <pre>
-            <code>{codeSnippet}</code>
+            <code>{curlSnippet}</code>
           </pre>
         </div>
 
-        <div className='code-example' style={{width: '100%', overflow: 'auto'}}>
-          <h1 className='title'>Curl Implementation Example</h1>
+        <div className="code-example" style={{ width: '100%', overflow: 'auto' }}>
+          <h1 className="title">Axios Request Example</h1>
           <pre>
-            <code>{curlSnippet}</code>
+            <code>{codeSnippet}</code>
           </pre>
         </div>
       </div>
