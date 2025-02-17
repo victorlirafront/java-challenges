@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -38,8 +37,6 @@ func AuthenticateRead(c *gin.Context) {
 		return []byte(secretKey), nil
 	})
 
-	fmt.Print("regular token ", token)
-
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token inválido"})
 		c.Abort()
@@ -54,5 +51,13 @@ func AuthenticateRead(c *gin.Context) {
 	}
 
 	c.Set("userID", userID)
+
+	role, ok := (*claims)["role"].(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Role não encontrada no token"})
+		c.Abort()
+		return
+	}
+	c.Set("role", role)
 	c.Next()
 }

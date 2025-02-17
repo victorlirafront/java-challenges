@@ -65,6 +65,7 @@ func AuthenticateAdmin() gin.HandlerFunc {
 		}
 
 		c.Set("userID", userID)
+		c.Set("role", role)
 		c.Next()
 	}
 
