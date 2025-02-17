@@ -45,7 +45,7 @@ function AsideMenu(props: AsideMenuProps) {
         )}
         {!isAuthenticated && (
           <li className="option" onClick={() => menuHandler('/auth/signup')}>
-            SignUp
+            Sign up
           </li>
         )}
         {isAuthenticated && (
