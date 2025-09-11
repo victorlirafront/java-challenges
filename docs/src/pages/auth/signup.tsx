@@ -1,1 +1,0 @@
-export { SignUp as default } from '@/views/Auth/SignUp'

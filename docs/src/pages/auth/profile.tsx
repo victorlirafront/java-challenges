@@ -1,1 +1,0 @@
-export { Profile as default } from '@/views/Auth/Profile'
