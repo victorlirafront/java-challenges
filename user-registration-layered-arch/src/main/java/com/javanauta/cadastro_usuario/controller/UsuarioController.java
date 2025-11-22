@@ -1,7 +1,10 @@
 package com.javanauta.cadastro_usuario.controller;
 
 import com.javanauta.cadastro_usuario.business.UsuarioService;
-import com.javanauta.cadastro_usuario.infrastructure.entitys.Usuario;
+import com.javanauta.cadastro_usuario.dto.request.UsuarioRequestDTO;
+import com.javanauta.cadastro_usuario.dto.request.UsuarioUpdateRequestDTO;
+import com.javanauta.cadastro_usuario.dto.response.UsuarioResponseDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +22,19 @@ public class UsuarioController {
 
     // Endpoint para salvar um novo usuário (HTTP POST)
     @PostMapping
-    public ResponseEntity<Void> salvarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDTO> salvarUsuario(@Valid @RequestBody UsuarioRequestDTO usuarioRequest) {
         // Chama o serviço para salvar o usuário recebido no corpo da requisição
-        usuarioService.salvarUsuario(usuario);
-        // Retorna uma resposta 200 OK sem corpo
-        return ResponseEntity.ok().build();
+        // O serviço retorna o DTO de resposta com os dados do usuário criado
+        UsuarioResponseDTO usuarioResponse = usuarioService.salvarUsuario(usuarioRequest);
+        // Retorna uma resposta 200 OK com os dados do usuário criado
+        return ResponseEntity.ok(usuarioResponse);
     }
 
     // Endpoint para buscar um usuário pelo email (HTTP GET)
     @GetMapping
-    public ResponseEntity<Usuario> buscarUsuarioPorEmail(@RequestParam String email) {
+    public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorEmail(@RequestParam String email) {
         // Chama o serviço para buscar o usuário pelo email passado como parâmetro na URL
+        // O serviço retorna o DTO de resposta
         return ResponseEntity.ok(usuarioService.buscarUsuarioPorEmail(email));
     }
 
@@ -44,11 +49,12 @@ public class UsuarioController {
 
     // Endpoint para atualizar os dados de um usuário existente (HTTP PUT)
     @PutMapping
-    public ResponseEntity<Void> atualizarUsuarioPorId(@RequestParam Integer id,
-                                                      @RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuarioPorId(@RequestParam Integer id,
+                                                                     @Valid @RequestBody UsuarioUpdateRequestDTO usuarioUpdateRequest) {
         // Chama o serviço para atualizar o usuário com o ID informado
-        usuarioService.atualizarUsuarioPorId(id, usuario);
-        // Retorna uma resposta 200 OK sem corpo
-        return ResponseEntity.ok().build();
+        // O serviço retorna o DTO de resposta com os dados atualizados
+        UsuarioResponseDTO usuarioResponse = usuarioService.atualizarUsuarioPorId(id, usuarioUpdateRequest);
+        // Retorna uma resposta 200 OK com os dados do usuário atualizado
+        return ResponseEntity.ok(usuarioResponse);
     }
 }
